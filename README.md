@@ -1,4 +1,4 @@
-## 🌙 Dream Journal — Full-Stack Web App
+# 🌙 Dream Journal — Full-Stack Web App
 
 # 🌙 Dream Journal — MERN Stack
 
@@ -292,5 +292,188 @@ Backend runs on [http://localhost:5000](http://localhost:5000).
 - [ ] AI-powered dream summaries
 - [ ] Voice notes + PWA support
 - [ ] Community features (sharing, comments, feed)
+
+---
+
+---
+
+# 🌙 Dream Journal — MERN Stack
+
+A **full-stack web app** for tracking, exploring, and reflecting on dreams. Built with the **MERN stack (MongoDB, Express, React, Node.js)**, this project helps users log their dreams, analyze patterns, and gain insights into their subconscious.
+
+---
+
+## ✨ Features
+
+### ✅ MVP Features
+
+- Secure authentication (JWT, bcrypt)
+- Create, view, update, and delete dream entries
+- Dashboard listing all dreams
+- Dream details with edit/delete options
+- Protected routes (frontend)
+
+### 🚀 Planned Features
+
+- Tags & moods for dreams
+- Search & filtering
+- Profile page & settings
+- Dream analytics (streaks, word clouds, mood trends)
+- Export to PDF/Markdown/TXT
+- Dark mode toggle
+- AI-powered dream summaries
+- Voice notes & PWA support
+- Community features (public sharing, comments, feed)
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React, React Router DOM, Axios, Context API
+- **Backend:** Node.js, Express, MongoDB, Mongoose, JWT, bcryptjs
+- **Dev Tools:** Nodemon, CORS, dotenv
+- **Deployment:** Netlify/Vercel (frontend), Render/Railway (backend)
+
+---
+
+## 🔑 API Documentation
+
+### Authentication Routes (`/api/auth`)
+
+#### **POST /register**
+
+Register a new user.
+
+```json
+// Request Body
+{
+  "name": "Alice",
+  "email": "alice@example.com",
+  "password": "123456"
+}
+
+// Response
+{
+  "user": {
+    "_id": "63f...",
+    "name": "Alice",
+    "email": "alice@example.com"
+  },
+  "token": "jwt_token_here"
+}
+```
+
+#### **POST /login**
+
+Login with credentials.
+
+```json
+// Request Body
+{
+  "email": "alice@example.com",
+  "password": "123456"
+}
+
+// Response
+{
+  "user": {
+    "_id": "63f...",
+    "name": "Alice",
+    "email": "alice@example.com"
+  },
+  "token": "jwt_token_here"
+}
+```
+
+---
+
+### Dream Routes (`/api/dreams`)
+
+> ⚠️ Requires `Authorization: Bearer <token>` header
+
+#### **GET /**
+
+Fetch all dreams for the logged-in user.
+
+```json
+[
+  {
+    "_id": "63f...",
+    "title": "Flying over mountains",
+    "description": "I was soaring...",
+    "date": "2025-09-27T00:00:00.000Z",
+    "user": "63f..."
+  }
+]
+```
+
+#### **POST /**
+
+Create a new dream.
+
+```json
+// Request Body
+{
+  "title": "Flying over mountains",
+  "description": "I was soaring...",
+  "date": "2025-09-27"
+}
+
+// Response
+{
+  "_id": "63f...",
+  "title": "Flying over mountains",
+  "description": "I was soaring...",
+  "date": "2025-09-27T00:00:00.000Z",
+  "user": "63f..."
+}
+```
+
+#### **GET /:id**
+
+Fetch a single dream by ID.
+
+#### **PUT /:id**
+
+Update dream details.
+
+```json
+// Request Body
+{
+  "title": "Updated Title",
+  "description": "Updated description",
+  "date": "2025-09-28"
+}
+```
+
+#### **DELETE /:id**
+
+Delete dream by ID.
+
+---
+
+## 🔐 Security Notes
+
+- Passwords are **hashed** with bcrypt before saving.
+- JWT tokens expire (recommended: `1d`) for better security.
+- Protected routes use `authMiddleware.js` to validate tokens.
+- Use **HTTPS** in production.
+
+---
+
+## 🧪 Testing with Postman
+
+1. Start backend server (`npm run server`)
+2. Import routes into Postman:
+
+   - `POST /api/auth/register` → Register user
+   - `POST /api/auth/login` → Get token
+   - Use token in `Authorization` header → Access `/api/dreams` routes
+
+Example:
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6...
+```
 
 ---

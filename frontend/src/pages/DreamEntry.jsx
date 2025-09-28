@@ -3,7 +3,14 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 
 export default function DreamEntry() {
-  const [form, setForm] = useState({ title: "", description: "", date: "" });
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    date: "",
+    tags: "",
+    mood: "Neutral",
+    rating: "",
+  });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -29,6 +36,12 @@ export default function DreamEntry() {
       newErrors.date = "Date cannot be in the future.";
     }
 
+    if (form.rating) {
+      const r = Number(form.rating);
+      if (Number.isNaN(r) || r < 1 || r > 5)
+        newErrors.rating = "Rating must be 1 to 5.";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -39,9 +52,27 @@ export default function DreamEntry() {
 
     try {
       setLoading(true);
-      await api.post("/dreams", form);
+
+      const tagsArray = form.tags
+        ? form.tags
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : [];
+
+      const payload = {
+        title: form.title,
+        description: form.description,
+        date: form.date,
+        tags: tagsArray,
+        mood: form.mood,
+        rating: form.rating ? Number(form.rating) : undefined,
+      };
+
+      await api.post("/dreams", payload);
       navigate("/dashboard");
     } catch (err) {
+      console.error(err);
       alert("Failed to save dream");
     } finally {
       setLoading(false);
@@ -58,7 +89,6 @@ export default function DreamEntry() {
           New Dream Entry
         </h2>
 
-        {/* Title */}
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
             Title
@@ -79,7 +109,6 @@ export default function DreamEntry() {
           )}
         </div>
 
-        {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
             Description
@@ -100,7 +129,6 @@ export default function DreamEntry() {
           )}
         </div>
 
-        {/* Date */}
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
             Date
@@ -120,7 +148,63 @@ export default function DreamEntry() {
           )}
         </div>
 
-        {/* Buttons */}
+        <div>
+          <label className="block text-sm font-medium text-gray-600 mb-1">
+            Tags (comma-separated)
+          </label>
+          <input
+            type="text"
+            placeholder="e.g., Lucid, Nightmare, Recurring"
+            value={form.tags}
+            onChange={(e) => setForm({ ...form, tags: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none text-sm"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Mood
+            </label>
+            <select
+              value={form.mood}
+              onChange={(e) => setForm({ ...form, mood: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none text-sm"
+            >
+              <option value="Neutral">Neutral</option>
+              <option value="Happy">Happy</option>
+              <option value="Scary">Scary</option>
+              <option value="Sad">Sad</option>
+              <option value="Exciting">Exciting</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Vividness (1-5)
+            </label>
+            <select
+              value={form.rating}
+              onChange={(e) => setForm({ ...form, rating: e.target.value })}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+                errors.rating
+                  ? "border-red-400 focus:ring-red-300"
+                  : "border-gray-300 focus:ring-purple-400"
+              }`}
+            >
+              <option value="">Not set</option>
+              <option value="1">1 - Faint</option>
+              <option value="2">2</option>
+              <option value="3">3 - Average</option>
+              <option value="4">4</option>
+              <option value="5">5 - Very vivid</option>
+            </select>
+            {errors.rating && (
+              <p className="text-red-500 text-sm mt-1">{errors.rating}</p>
+            )}
+          </div>
+        </div>
+
         <div className="flex justify-between gap-2">
           <button
             type="button"

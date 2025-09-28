@@ -6,6 +6,13 @@ const DreamSchema = new mongoose.Schema(
     title: { type: String, default: "Untitled" },
     content: { type: String, required: true },
     dateOfDream: { type: Date, default: Date.now },
+    tags: [{ type: String }],
+    mood: {
+      type: String,
+      enum: ["Happy", "Scary", "Sad", "Exciting", "Neutral"],
+      default: "Neutral",
+    },
+    rating: { type: Number, min: 1, max: 5 },
   },
   { timestamps: true }
 );

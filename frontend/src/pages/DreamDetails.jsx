@@ -7,7 +7,14 @@ export default function DreamDetails() {
   const navigate = useNavigate();
   const [dream, setDream] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [form, setForm] = useState({ title: "", description: "", date: "" });
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    date: "",
+    tags: "",
+    mood: "Neutral",
+    rating: "",
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -24,6 +31,9 @@ export default function DreamDetails() {
           title: res.data.title || "",
           description: res.data.content || "",
           date: res.data.dateOfDream ? res.data.dateOfDream.slice(0, 10) : "",
+          tags: res.data.tags ? res.data.tags.join(",") : "",
+          mood: res.data.mood || "Neutral",
+          rating: res.data.rating ? String(res.data.rating) : "",
         });
       } catch (err) {
         console.error(err);
@@ -39,14 +49,28 @@ export default function DreamDetails() {
     e.preventDefault();
     try {
       setSaving(true);
-      const res = await api.put(`/dreams/${id}`, {
+
+      const tagsArray = form.tags
+        ? form.tags
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean)
+        : [];
+
+      const payload = {
         title: form.title,
-        content: form.description,
-        dateOfDream: form.date,
-      });
+        description: form.description,
+        date: form.date,
+        tags: tagsArray,
+        mood: form.mood,
+        rating: form.rating ? Number(form.rating) : undefined,
+      };
+
+      const res = await api.put(`/dreams/${id}`, payload);
       setDream(res.data);
       setEditMode(false);
     } catch (err) {
+      console.error(err);
       alert("Update failed");
     } finally {
       setSaving(false);
@@ -88,6 +112,26 @@ export default function DreamDetails() {
     return <p className="text-center text-gray-600 mt-10">Dream not found.</p>;
   }
 
+  // Helper for showing rating stars
+  const renderStars = (value) => {
+    const n = Number(value) || 0;
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <svg
+          key={i}
+          className={`w-4 h-4 ${i <= n ? "text-yellow-400" : "text-gray-300"}`}
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.947a1 1 0 00.95.69h4.148c.969 0 1.371 1.24.588 1.81l-3.36 2.44a1 1 0 00-.364 1.118l1.287 3.948c.3.921-.755 1.688-1.54 1.118L10 15.347l-3.36 2.44c-.785.57-1.84-.197-1.54-1.118l1.286-3.948a1 1 0 00-.364-1.118L2.66 9.374c-.783-.57-.38-1.81.588-1.81h4.148a1 1 0 00.95-.69L9.05 2.927z" />
+        </svg>
+      );
+    }
+    return <div className="flex items-center gap-1">{stars}</div>;
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-indigo-100 to-pink-100 p-4">
       <div className="w-full max-w-sm sm:max-w-lg md:max-w-2xl bg-white shadow-lg rounded-2xl p-6 space-y-4 relative">
@@ -96,9 +140,36 @@ export default function DreamDetails() {
             <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
               {dream.title}
             </h2>
+
             <p className="text-gray-700 whitespace-pre-wrap text-sm sm:text-base">
               {dream.content}
             </p>
+
+            <div className="flex flex-wrap gap-2 items-center">
+              {dream.tags && dream.tags.length > 0 && (
+                <div className="flex items-center gap-2">
+                  {dream.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div className="text-xs text-gray-500 ml-2">
+                <b>Mood:</b> {dream.mood || "Neutral"}
+              </div>
+              <div className="ml-3">
+                {dream.rating ? (
+                  <div className="flex items-center gap-2 text-sm">
+                    <b>Vividness:</b> {renderStars(dream.rating)}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+
             <p className="text-xs sm:text-sm text-gray-500">
               <b>Date:</b>{" "}
               {dream.dateOfDream
@@ -170,6 +241,56 @@ export default function DreamDetails() {
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Tags (comma-separated)
+              </label>
+              <input
+                type="text"
+                value={form.tags}
+                onChange={(e) => setForm({ ...form, tags: e.target.value })}
+                placeholder="Lucid, Nightmare"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none text-sm sm:text-base"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Mood
+                </label>
+                <select
+                  value={form.mood}
+                  onChange={(e) => setForm({ ...form, mood: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none text-sm"
+                >
+                  <option value="Neutral">Neutral</option>
+                  <option value="Happy">Happy</option>
+                  <option value="Scary">Scary</option>
+                  <option value="Sad">Sad</option>
+                  <option value="Exciting">Exciting</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Vividness (1-5)
+                </label>
+                <select
+                  value={form.rating}
+                  onChange={(e) => setForm({ ...form, rating: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none text-sm"
+                >
+                  <option value="">Not set</option>
+                  <option value="1">1 - Faint</option>
+                  <option value="2">2</option>
+                  <option value="3">3 - Average</option>
+                  <option value="4">4</option>
+                  <option value="5">5 - Very vivid</option>
+                </select>
+              </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 type="submit"
@@ -189,7 +310,7 @@ export default function DreamDetails() {
           </form>
         )}
 
-        {/* Delete Modal */}
+        {/* Delete Modal (unchanged) */}
         {deleteModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full space-y-6 shadow-xl animate-scale-fade">

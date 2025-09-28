@@ -8,6 +8,9 @@ import DreamEntry from "./pages/DreamEntry";
 import DreamDetails from "./pages/DreamDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+//! To run the backend for DEVELOPMENT -> npm start
+//! To run the backend for PRODUCTION -> npm run build
+
 function App() {
   return (
     <AuthProvider>

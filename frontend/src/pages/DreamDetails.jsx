@@ -64,9 +64,20 @@ export default function DreamDetails() {
   };
 
   if (loading) {
+    // Skeleton loading
     return (
-      <div className="flex justify-center items-center min-h-screen text-gray-600">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-purple-500"></div>
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-purple-100 via-indigo-100 to-pink-100 p-4">
+        <div className="w-full max-w-sm sm:max-w-lg md:max-w-2xl bg-white shadow-lg rounded-2xl p-6 space-y-4 animate-pulse">
+          <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+          <div className="h-4 bg-gray-300 rounded w-full"></div>
+          <div className="h-4 bg-gray-300 rounded w-full"></div>
+          <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+          <div className="flex gap-3 mt-4">
+            <div className="flex-1 h-10 bg-gray-300 rounded-lg"></div>
+            <div className="flex-1 h-10 bg-gray-300 rounded-lg"></div>
+            <div className="flex-1 h-10 bg-gray-300 rounded-lg"></div>
+          </div>
+        </div>
       </div>
     );
   }

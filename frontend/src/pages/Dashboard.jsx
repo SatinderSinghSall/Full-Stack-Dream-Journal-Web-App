@@ -3,9 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../api/api";
 import { AuthContext } from "../contexts/AuthContext";
 import DreamCard from "../components/DreamCard";
+import { FiPlus } from "react-icons/fi";
 
 export default function Dashboard() {
   const [dreams, setDreams] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -16,6 +18,8 @@ export default function Dashboard() {
         setDreams(res.data);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchDreams();
@@ -26,11 +30,13 @@ export default function Dashboard() {
     navigate("/login");
   };
 
+  const stats = [{ label: "Total Dreams", value: dreams.length }];
+
   return (
     <div className="min-h-screen bg-gray-900 text-white px-4 py-8 relative">
       <div className="absolute inset-0 bg-grid-pattern pointer-events-none"></div>
 
-      <div className="relative max-w-6xl mx-auto">
+      <div className="relative max-w-7xl mx-auto space-y-12">
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
           <h2 className="text-3xl font-bold mb-4 sm:mb-0">
             Welcome, {user?.name} 👋
@@ -43,7 +49,30 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <div className="mb-6 text-center sm:text-left">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {loading
+            ? Array.from({ length: 3 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="p-6 bg-gray-800 rounded-2xl shadow-lg animate-pulse"
+                >
+                  <div className="h-8 w-16 bg-gray-700 mx-auto rounded mb-2"></div>
+                  <div className="h-4 w-24 bg-gray-700 mx-auto rounded"></div>
+                </div>
+              ))
+            : stats.map((stat, idx) => (
+                <div
+                  key={idx}
+                  className="p-6 bg-gray-800 rounded-2xl shadow-lg text-center hover:scale-105 transition"
+                >
+                  <p className="text-3xl font-bold">{stat.value}</p>
+                  <p className="text-gray-400">{stat.label}</p>
+                </div>
+              ))}
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4">
+          <h3 className="text-2xl font-semibold">Your Dreams</h3>
           <Link
             to="/dream/new"
             className="inline-block px-5 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-semibold transition shadow-md"
@@ -52,7 +81,20 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        {dreams.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="p-6 bg-gray-800 rounded-2xl shadow-lg animate-pulse space-y-4"
+              >
+                <div className="h-40 bg-gray-700 rounded"></div>
+                <div className="h-6 w-3/4 bg-gray-700 rounded"></div>
+                <div className="h-4 w-1/2 bg-gray-700 rounded"></div>
+              </div>
+            ))}
+          </div>
+        ) : dreams.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {dreams.map((dream, index) => (
               <div
@@ -83,12 +125,27 @@ export default function Dashboard() {
         )}
       </div>
 
+      <Link
+        to="/dream/new"
+        className="sm:hidden fixed bottom-6 right-6 w-14 h-14 flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 rounded-full shadow-lg text-2xl font-bold transition"
+      >
+        <FiPlus />
+      </Link>
+
       <style>
         {`
           .bg-grid-pattern {
             background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
                               linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
             background-size: 40px 40px;
+          }
+          .animate-fade-in {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+          }
+          @keyframes fadeInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
           }
         `}
       </style>

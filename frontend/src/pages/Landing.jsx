@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
+import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Features from "../components/Features";
 
 export default function Landing() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-black text-white">
+      <Navbar />
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center flex-grow text-center px-6 py-20">
         <motion.h1

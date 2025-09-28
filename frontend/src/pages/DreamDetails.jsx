@@ -96,7 +96,7 @@ export default function DreamDetails() {
             <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
               {dream.title}
             </h2>
-            <p className="text-gray-700 whitespace-pre-line text-sm sm:text-base">
+            <p className="text-gray-700 whitespace-pre-wrap text-sm sm:text-base">
               {dream.content}
             </p>
             <p className="text-xs sm:text-sm text-gray-500">

@@ -10,8 +10,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  // 🔎 NEW STATES for search & filters
   const [search, setSearch] = useState("");
   const [filterMood, setFilterMood] = useState("");
   const [sortBy, setSortBy] = useState("newest");
@@ -40,7 +38,7 @@ export default function Dashboard() {
   const filteredDreams = dreams
     .filter((dream) => {
       const title = dream.title || "";
-      const content = dream.content || ""; // match backend field
+      const content = dream.content || "";
       const matchesSearch =
         title.toLowerCase().includes(search.toLowerCase()) ||
         content.toLowerCase().includes(search.toLowerCase());
@@ -63,7 +61,6 @@ export default function Dashboard() {
       <div className="absolute inset-0 bg-grid-pattern pointer-events-none"></div>
 
       <div className="relative max-w-7xl mx-auto space-y-12">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
           <h2 className="text-3xl font-bold mb-4 sm:mb-0">
             Welcome, {user?.name} 👋
@@ -76,7 +73,6 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {loading
             ? Array.from({ length: 3 }).map((_, idx) => (
@@ -99,33 +95,33 @@ export default function Dashboard() {
               ))}
         </div>
 
-        {/* Filters & Add Button */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h3 className="text-2xl font-semibold">Your Dreams</h3>
+          <h3 className="text-2xl font-semibold text-white">Your Dreams</h3>
           <Link
             to="/dream/new"
-            className="inline-block px-5 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-semibold transition shadow-md"
+            className="inline-flex items-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-full font-semibold transition shadow-md"
           >
-            ➕ Add New Dream
+            <FiPlus className="text-lg" />
+            Add New Dream
           </Link>
         </div>
 
         {/* 🔎 Filter Controls */}
-        <div className="flex flex-wrap gap-3 mt-4">
-          {/* Search */}
-          <input
-            type="text"
-            placeholder="Search dreams..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-2 rounded-xl bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+        <div className="flex flex-wrap gap-3 mt-4 bg-gray-800 p-4 rounded-2xl shadow-sm">
+          <div className="flex-1 min-w-[200px]">
+            <input
+              type="text"
+              placeholder="Search dreams..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full px-4 py-2 rounded-full bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            />
+          </div>
 
-          {/* Mood Filter */}
           <select
             value={filterMood}
             onChange={(e) => setFilterMood(e.target.value)}
-            className="px-4 py-2 rounded-xl bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2 rounded-full bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           >
             <option value="">All Moods</option>
             <option value="Happy">Happy</option>
@@ -135,19 +131,17 @@ export default function Dashboard() {
             <option value="Neutral">Neutral</option>
           </select>
 
-          {/* Sort */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2 rounded-xl bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2 rounded-full bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           >
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
-            <option value="rating">Most Vivid (Rating)</option>
+            <option value="rating">Most Vivid</option>
           </select>
         </div>
 
-        {/* Dreams List */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, idx) => (
@@ -186,7 +180,6 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Floating Add Button (Mobile) */}
       <Link
         to="/dream/new"
         className="sm:hidden fixed bottom-6 right-6 w-14 h-14 flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 rounded-full shadow-lg text-2xl font-bold transition"

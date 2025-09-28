@@ -10,6 +10,8 @@ export default function DreamDetails() {
   const [form, setForm] = useState({ title: "", description: "", date: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // Fetch dream details
   useEffect(() => {
@@ -32,18 +34,6 @@ export default function DreamDetails() {
     fetchDream();
   }, [id]);
 
-  // Delete dream
-  const handleDelete = async () => {
-    if (window.confirm("Delete this dream?")) {
-      try {
-        await api.delete(`/dreams/${id}`);
-        navigate("/dashboard");
-      } catch (err) {
-        alert("Delete failed");
-      }
-    }
-  };
-
   // Update dream
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -63,8 +53,20 @@ export default function DreamDetails() {
     }
   };
 
+  // Delete dream
+  const handleDelete = async () => {
+    try {
+      setDeleting(true);
+      await api.delete(`/dreams/${id}`);
+      navigate("/dashboard");
+    } catch (err) {
+      alert("Delete failed");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (loading) {
-    // Skeleton loading
     return (
       <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-purple-100 via-indigo-100 to-pink-100 p-4">
         <div className="w-full max-w-sm sm:max-w-lg md:max-w-2xl bg-white shadow-lg rounded-2xl p-6 space-y-4 animate-pulse">
@@ -88,7 +90,7 @@ export default function DreamDetails() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-indigo-100 to-pink-100 p-4">
-      <div className="w-full max-w-sm sm:max-w-lg md:max-w-2xl bg-white shadow-lg rounded-2xl p-6 space-y-4">
+      <div className="w-full max-w-sm sm:max-w-lg md:max-w-2xl bg-white shadow-lg rounded-2xl p-6 space-y-4 relative">
         {!editMode ? (
           <>
             <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
@@ -112,7 +114,7 @@ export default function DreamDetails() {
                 Edit
               </button>
               <button
-                onClick={handleDelete}
+                onClick={() => setDeleteModalOpen(true)}
                 className="flex-1 bg-red-500 text-white font-semibold py-2 rounded-lg shadow hover:bg-red-600 transition"
               >
                 Delete
@@ -127,7 +129,6 @@ export default function DreamDetails() {
           </>
         ) : (
           <form onSubmit={handleUpdate} className="space-y-4">
-            {/* Title */}
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">
                 Title
@@ -141,7 +142,6 @@ export default function DreamDetails() {
               />
             </div>
 
-            {/* Description */}
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">
                 Description
@@ -157,7 +157,6 @@ export default function DreamDetails() {
               />
             </div>
 
-            {/* Date */}
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">
                 Date
@@ -171,40 +170,13 @@ export default function DreamDetails() {
               />
             </div>
 
-            {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 type="submit"
                 disabled={saving}
                 className="flex-1 flex items-center justify-center gap-2 bg-purple-500 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-purple-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {saving ? (
-                  <>
-                    <svg
-                      className="w-5 h-5 animate-spin text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 00-8 8h4z"
-                      ></path>
-                    </svg>
-                    Saving...
-                  </>
-                ) : (
-                  "Save"
-                )}
+                {saving ? "Saving..." : "Save"}
               </button>
               <button
                 type="button"
@@ -216,7 +188,108 @@ export default function DreamDetails() {
             </div>
           </form>
         )}
+
+        {/* Delete Modal */}
+        {deleteModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full space-y-6 shadow-xl animate-scale-fade">
+              <div className="flex flex-col items-center text-center">
+                <div className="bg-red-100 rounded-full p-5 mb-4 flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-red-600"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Delete Dream
+                </h3>
+                <p className="text-gray-600 text-sm sm:text-base">
+                  Are you sure you want to delete this dream? This action cannot
+                  be undone.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="flex-1 flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-2 rounded-xl shadow hover:bg-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {deleting ? (
+                    <>
+                      <svg
+                        className="w-5 h-5 animate-spin"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        />
+                      </svg>
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                      Delete
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setDeleteModalOpen(false)}
+                  className="flex-1 bg-gray-200 text-gray-700 font-semibold py-2 rounded-xl shadow hover:bg-gray-300 transition focus:outline-none focus:ring-2 focus:ring-gray-400"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
+      <style>
+        {`
+          @keyframes scaleFade {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+          }
+          .animate-scale-fade {
+            animation: scaleFade 0.2s ease-out forwards;
+          }
+        `}
+      </style>
     </div>
   );
 }

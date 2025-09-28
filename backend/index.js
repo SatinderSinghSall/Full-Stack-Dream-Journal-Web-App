@@ -30,6 +30,10 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/dreams", require("./routes/dreams"));
 
+app.use("/", (req, res) => {
+  res.send("Server's / Backend API is running & LIVE...🚀");
+});
+
 // DB connection
 connectDB();
 

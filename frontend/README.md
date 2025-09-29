@@ -1,70 +1,133 @@
-# Getting Started with Create React App
+# 🌙 Dream Journal — Frontend (React + Tailwind)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A **modern React web app** for logging, exploring, and reflecting on dreams.
+This is the **frontend** of the [Dream Journal MERN Stack Project](../backend), built with **React, TailwindCSS, and React Router**.
 
-## Available Scripts
+Users can register, log in, and manage their dream entries through a clean, intuitive interface.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## ✨ Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### ✅ MVP Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Authentication (JWT-based)**
 
-### `npm test`
+  - Login / Signup pages
+  - Auth context with protected routes
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Dream Management**
 
-### `npm run build`
+  - Dashboard with all dream entries
+  - Create, view, edit, and delete dreams
+  - Dream details page
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **UI & Navigation**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  - Modern TailwindCSS design
+  - Navbar, footer, and landing page
+  - Responsive & mobile-friendly
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+### 🚀 Planned Enhancements
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Dream tags (Lucid, Nightmare, Recurring, etc.)
+- Mood selector (emoji or scale)
+- Search & filter dreams
+- Profile page with avatar + settings
+- Dark mode toggle
+- Export dreams (PDF/Markdown/TXT)
+- Analytics: streaks, word clouds, mood trends
+- PWA support for mobile offline logging
+- AI summaries & pattern detection
+- Community features (public dream sharing, comments, likes)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🛠️ Tech Stack
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **Framework:** [React 19](https://react.dev)
+- **Routing:** [React Router v7](https://reactrouter.com)
+- **UI & Styling:** [TailwindCSS](https://tailwindcss.com), [clsx](https://github.com/lukeed/clsx), [tailwind-variants](https://tailwind-variants.org)
+- **Animations:** [Framer Motion](https://www.framer.com/motion)
+- **Icons:** [Lucide React](https://lucide.dev), [React Icons](https://react-icons.github.io/react-icons/)
+- **API Requests:** [Axios](https://axios-http.com)
+- **State Management:** React Context API
+- **Testing:** React Testing Library + Jest
+- **Deployment:** Netlify / Vercel (planned)
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📂 Project Structure
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+├── 📁 frontend/
+│   ├── 📁 build/ 🚫 (auto-hidden)
+│   ├── 📁 node_modules/ 🚫 (auto-hidden)
+│   ├── 📁 public/
+│   │   ├── 🖼️ favicon.ico
+│   │   ├── 🌐 index.html
+│   │   ├── 🖼️ logo192.png
+│   │   ├── 🖼️ logo512.png
+│   │   ├── 📄 manifest.json
+│   │   └── 📄 robots.txt
+│   ├── 📁 src/
+│   │   ├── 📁 api/
+│   │   │   └── 📄 api.js
+│   │   ├── 📁 components/
+│   │   │   ├── 📄 DreamCard.jsx
+│   │   │   ├── 📄 Features.jsx
+│   │   │   ├── 📄 Footer.jsx
+│   │   │   ├── 📄 Navbar.jsx
+│   │   │   └── 📄 ProtectedRoute.jsx
+│   │   ├── 📁 contexts/
+│   │   │   └── 📄 AuthContext.jsx
+│   │   ├── 📁 pages/
+│   │   │   ├── 📄 Dashboard.jsx
+│   │   │   ├── 📄 DreamDetails.jsx
+│   │   │   ├── 📄 DreamEntry.jsx
+│   │   │   ├── 📄 Landing.jsx
+│   │   │   ├── 📄 Login.jsx
+│   │   │   └── 📄 Signup.jsx
+│   │   ├── 🎨 App.css
+│   │   ├── 📄 App.js
+│   │   ├── 📄 App.test.js
+│   │   ├── 🎨 index.css
+│   │   ├── 📄 index.js
+│   │   ├── 🖼️ logo.svg
+│   │   ├── 📄 reportWebVitals.js
+│   │   └── 📄 setupTests.js
+│   ├── 📄 .env.development 🚫 (auto-hidden)
+│   ├── 📄 .env.production 🚫 (auto-hidden)
+│   ├── 🚫 .gitignore
+│   ├── 📖 README.md
+│   ├── 📄 package-lock.json
+│   ├── 📄 package.json
+│   └── 📄 tailwind.config.js
+```
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🚦 Roadmap
 
-### Analyzing the Bundle Size
+- [x] MVP Frontend (Auth, Dashboard, Dream CRUD)
+- [ ] Tags, moods, and filters
+- [ ] Profile & settings page
+- [ ] Analytics & visualizations
+- [ ] Dark mode + Export options
+- [ ] AI-powered dream summaries
+- [ ] Voice notes & PWA
+- [ ] Community features
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 🔐 Notes
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Auth routes are protected using **AuthContext + ProtectedRoute**.
+- API requests require a valid **JWT token** from the backend.
+- Use **HTTPS** and environment variables in production.
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🌟 Preview (COMING SOON)

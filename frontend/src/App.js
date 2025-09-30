@@ -1,11 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+
 import { AuthProvider } from "./contexts/AuthContext";
+
 import Landing from "./pages/Landing";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import DreamEntry from "./pages/DreamEntry";
 import DreamDetails from "./pages/DreamDetails";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
 //! To run the backend for DEVELOPMENT -> npm start
@@ -45,6 +49,7 @@ function App() {
           />
         </Routes>
       </Router>
+      <ToastContainer />
     </AuthProvider>
   );
 }

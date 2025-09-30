@@ -1,8 +1,10 @@
 import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { FiArrowLeft, FiEye, FiEyeOff } from "react-icons/fi";
+import { toast } from "react-toastify";
+
 import api from "../api/api";
 import { AuthContext } from "../contexts/AuthContext";
-import { FiArrowLeft, FiEye, FiEyeOff } from "react-icons/fi";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -16,10 +18,11 @@ export default function Login() {
     setLoading(true);
     try {
       const res = await api.post("/auth/login", form);
+      toast.success("Login successful!");
       login(res.data.user, res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }

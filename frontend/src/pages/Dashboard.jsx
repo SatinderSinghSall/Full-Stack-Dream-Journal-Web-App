@@ -1,9 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/api";
+import { FiPlus } from "react-icons/fi";
+import { toast } from "react-toastify";
+
 import { AuthContext } from "../contexts/AuthContext";
 import DreamCard from "../components/DreamCard";
-import { FiPlus } from "react-icons/fi";
 
 export default function Dashboard() {
   const [dreams, setDreams] = useState([]);
@@ -29,6 +31,7 @@ export default function Dashboard() {
   }, []);
 
   const handleLogout = () => {
+    toast.success("Logged out successfully!");
     logout();
     navigate("/login");
   };

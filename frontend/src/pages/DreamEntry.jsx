@@ -83,37 +83,43 @@ export default function DreamEntry() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-indigo-100 to-pink-100 p-4">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-200 via-pink-200 to-purple-200 relative overflow-hidden px-4">
+      <div className="absolute w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+      <div className="absolute w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+      <div className="absolute w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 space-y-4"
+        className="relative w-full max-w-2xl mt-10 mb-10 bg-white/40 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.15)] rounded-3xl p-8 space-y-6 border border-white/30"
       >
-        <h2 className="text-2xl font-bold text-gray-800 text-center">
-          New Dream Entry
+        <h2 className="text-3xl font-bold text-center text-gray-800 tracking-wide drop-shadow-sm">
+          🌙 New Dream Entry
         </h2>
 
+        {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Title
           </label>
           <input
             type="text"
-            placeholder="Enter a title"
+            placeholder="Enter a title..."
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
-            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+            className={`w-full px-4 py-3 rounded-2xl border focus:ring-2 focus:outline-none transition ${
               errors.title
-                ? "border-red-400 focus:ring-red-300"
-                : "border-gray-300 focus:ring-purple-400"
+                ? "border-red-300 focus:ring-red-200 bg-red-50/50"
+                : "border-transparent focus:ring-purple-300 bg-white/70"
             }`}
           />
           {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+            <p className="text-red-400 text-sm mt-1">{errors.title}</p>
           )}
         </div>
 
+        {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Description
           </label>
           <textarea
@@ -121,38 +127,40 @@ export default function DreamEntry() {
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
             rows={4}
-            className={`w-full px-3 py-2 border rounded-lg resize-none focus:ring-2 focus:outline-none ${
+            className={`w-full px-4 py-3 rounded-2xl resize-none border focus:ring-2 focus:outline-none transition ${
               errors.description
-                ? "border-red-400 focus:ring-red-300"
-                : "border-gray-300 focus:ring-purple-400"
+                ? "border-red-300 focus:ring-red-200 bg-red-50/50"
+                : "border-transparent focus:ring-purple-300 bg-white/70"
             }`}
           />
           {errors.description && (
-            <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+            <p className="text-red-400 text-sm mt-1">{errors.description}</p>
           )}
         </div>
 
+        {/* Date */}
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Date
           </label>
           <input
             type="date"
             value={form.date}
             onChange={(e) => setForm({ ...form, date: e.target.value })}
-            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+            className={`w-full px-4 py-3 rounded-2xl border focus:ring-2 focus:outline-none transition ${
               errors.date
-                ? "border-red-400 focus:ring-red-300"
-                : "border-gray-300 focus:ring-purple-400"
+                ? "border-red-300 focus:ring-red-200 bg-red-50/50"
+                : "border-transparent focus:ring-purple-300 bg-white/70"
             }`}
           />
           {errors.date && (
-            <p className="text-red-500 text-sm mt-1">{errors.date}</p>
+            <p className="text-red-400 text-sm mt-1">{errors.date}</p>
           )}
         </div>
 
+        {/* Tags */}
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Tags (comma-separated)
           </label>
           <input
@@ -160,19 +168,20 @@ export default function DreamEntry() {
             placeholder="e.g., Lucid, Nightmare, Recurring"
             value={form.tags}
             onChange={(e) => setForm({ ...form, tags: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none text-sm"
+            className="w-full px-4 py-3 rounded-2xl border border-transparent bg-white/70 focus:ring-2 focus:ring-purple-300 focus:outline-none text-sm"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        {/* Mood + Rating */}
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Mood
             </label>
             <select
               value={form.mood}
               onChange={(e) => setForm({ ...form, mood: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none text-sm"
+              className="w-full px-4 py-3 rounded-2xl border border-transparent bg-white/70 focus:ring-2 focus:ring-purple-300 focus:outline-none text-sm"
             >
               <option value="Neutral">Neutral</option>
               <option value="Happy">Happy</option>
@@ -183,16 +192,16 @@ export default function DreamEntry() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Vividness (1-5)
             </label>
             <select
               value={form.rating}
               onChange={(e) => setForm({ ...form, rating: e.target.value })}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+              className={`w-full px-4 py-3 rounded-2xl border focus:ring-2 focus:outline-none transition ${
                 errors.rating
-                  ? "border-red-400 focus:ring-red-300"
-                  : "border-gray-300 focus:ring-purple-400"
+                  ? "border-red-300 focus:ring-red-200 bg-red-50/50"
+                  : "border-transparent focus:ring-purple-300 bg-white/70"
               }`}
             >
               <option value="">Not set</option>
@@ -203,52 +212,27 @@ export default function DreamEntry() {
               <option value="5">5 - Very vivid</option>
             </select>
             {errors.rating && (
-              <p className="text-red-500 text-sm mt-1">{errors.rating}</p>
+              <p className="text-red-400 text-sm mt-1">{errors.rating}</p>
             )}
           </div>
         </div>
 
-        <div className="flex justify-between gap-2">
+        {/* Buttons */}
+        <div className="flex gap-3">
           <button
             type="button"
             onClick={() => navigate(-1)}
             disabled={loading}
-            className="w-1/2 bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg shadow hover:bg-gray-300 transition disabled:opacity-50"
+            className="w-1/2 py-3 rounded-2xl bg-white/70 text-gray-700 font-semibold shadow hover:bg-white/90 transition disabled:opacity-50"
           >
             Back
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="w-1/2 flex items-center justify-center gap-2 bg-purple-500 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-purple-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-1/2 py-3 rounded-2xl bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 text-white font-semibold shadow-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? (
-              <>
-                <svg
-                  className="w-5 h-5 animate-spin text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 00-8 8h4z"
-                  ></path>
-                </svg>
-                Saving...
-              </>
-            ) : (
-              "Save Dream"
-            )}
+            {loading ? "Saving..." : "Save Dream"}
           </button>
         </div>
       </form>

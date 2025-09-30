@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 import api from "../api/api";
 
 export default function DreamEntry() {
@@ -70,10 +72,11 @@ export default function DreamEntry() {
       };
 
       await api.post("/dreams", payload);
+      toast.success("Dream saved successfully!");
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
-      alert("Failed to save dream");
+      toast.error("Failed to save dream.");
     } finally {
       setLoading(false);
     }

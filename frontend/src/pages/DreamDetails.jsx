@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 import api from "../api/api";
 
 export default function DreamDetails() {
@@ -36,6 +38,8 @@ export default function DreamDetails() {
           rating: res.data.rating ? String(res.data.rating) : "",
         });
       } catch (err) {
+        toast.error("Failed to load dream.");
+        navigate("/dashboard");
         console.error(err);
       } finally {
         setLoading(false);
@@ -67,11 +71,12 @@ export default function DreamDetails() {
       };
 
       const res = await api.put(`/dreams/${id}`, payload);
+      toast.success("Dream updated successfully!");
       setDream(res.data);
       setEditMode(false);
     } catch (err) {
       console.error(err);
-      alert("Update failed");
+      toast.error("Dream update failed.");
     } finally {
       setSaving(false);
     }
@@ -82,9 +87,10 @@ export default function DreamDetails() {
     try {
       setDeleting(true);
       await api.delete(`/dreams/${id}`);
+      toast.success("Dream deleted successfully!");
       navigate("/dashboard");
     } catch (err) {
-      alert("Delete failed");
+      toast.error("Dream delete failed.");
     } finally {
       setDeleting(false);
     }

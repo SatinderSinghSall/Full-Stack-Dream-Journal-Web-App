@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { BookOpen } from "lucide-react";
 
 import api from "../api/api";
 
@@ -15,6 +16,8 @@ export default function DreamEntry() {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -118,23 +121,45 @@ export default function DreamEntry() {
         </div>
 
         {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-800">
             Description
           </label>
-          <textarea
-            placeholder="Describe your dream..."
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-            rows={4}
-            className={`w-full px-4 py-3 rounded-2xl resize-none border focus:ring-2 focus:outline-none transition ${
-              errors.description
-                ? "border-red-300 focus:ring-red-200 bg-red-50/50"
-                : "border-transparent focus:ring-purple-300 bg-white/70"
-            }`}
-          />
+
+          <div className="relative">
+            <textarea
+              placeholder="Describe your dream..."
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+              rows={4}
+              className={`w-full px-4 py-3 rounded-2xl resize-none border shadow-sm transition duration-200 placeholder-gray-400 focus:outline-none ${
+                errors.description
+                  ? "border-red-300 focus:ring-2 focus:ring-red-200 bg-red-50/60"
+                  : "border-gray-200 focus:ring-2 focus:ring-purple-300 bg-white/80"
+              }`}
+            />
+            {/* Glow border effect on focus */}
+            <span className="absolute inset-0 rounded-2xl pointer-events-none ring-0 focus-within:ring-2 focus-within:ring-purple-200 transition"></span>
+          </div>
+
           {errors.description && (
-            <p className="text-red-400 text-sm mt-1">{errors.description}</p>
+            <p className="text-red-500 text-xs font-medium">
+              {errors.description}
+            </p>
+          )}
+
+          {/* Show full text option */}
+          {form.description && (
+            <button
+              type="button"
+              onClick={() => setShowModal(true)}
+              className="inline-flex items-center text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors"
+            >
+              <BookOpen className="w-4 h-4 mr-1" />
+              See full description
+            </button>
           )}
         </div>
 
@@ -236,6 +261,36 @@ export default function DreamEntry() {
           </button>
         </div>
       </form>
+
+      {/* Modal to display & edit dream description */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6 relative">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              Dream Description
+            </h3>
+
+            {/* Editable Textarea */}
+            <textarea
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+              rows={12}
+              className="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:ring-2 focus:ring-purple-300 focus:outline-none resize-none"
+              placeholder="Edit your dream description here..."
+            />
+
+            {/* Close button */}
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              ✖
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

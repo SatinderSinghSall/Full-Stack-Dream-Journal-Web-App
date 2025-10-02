@@ -81,13 +81,20 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-3 rounded-2xl font-semibold transition shadow-md ${
+          className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-semibold transition shadow-md ${
             loading
               ? "bg-indigo-400 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-500"
           }`}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? (
+            <>
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              Logging in...
+            </>
+          ) : (
+            "Login"
+          )}
         </button>
 
         <p className="mt-4 text-center text-gray-400">

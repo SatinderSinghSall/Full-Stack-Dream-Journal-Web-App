@@ -255,9 +255,16 @@ export default function DreamEntry() {
           <button
             type="submit"
             disabled={loading}
-            className="w-1/2 py-3 rounded-2xl bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 text-white font-semibold shadow-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-1/2 flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 text-white font-semibold shadow-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Saving..." : "Save Dream"}
+            {loading ? (
+              <>
+                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Saving...
+              </>
+            ) : (
+              "Save Dream"
+            )}
           </button>
         </div>
       </form>

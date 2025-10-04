@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 import { AuthContext } from "../contexts/AuthContext";
 import DreamCard from "../components/DreamCard";
+import UserMenu from "../components/UserMenu";
 
 export default function Dashboard() {
   const [dreams, setDreams] = useState([]);
@@ -64,16 +65,21 @@ export default function Dashboard() {
       <div className="absolute inset-0 bg-grid-pattern pointer-events-none"></div>
 
       <div className="relative max-w-7xl mx-auto space-y-12">
-        <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold mb-4 sm:mb-0">
-            Welcome, {user?.name} 👋
-          </h2>
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 bg-red-600 hover:bg-red-500 rounded-xl font-semibold transition shadow-md"
-          >
-            Logout
-          </button>
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-indigo-400">
+              Welcome back, {user?.name?.split(" ")[0]} 👋
+            </h1>
+            <p className="text-gray-400 text-sm mt-1">
+              Today is{" "}
+              {new Date().toLocaleDateString(undefined, {
+                weekday: "long",
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
+          </div>
+          <UserMenu />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">

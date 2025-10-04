@@ -147,7 +147,8 @@ Root path: `e:\My Projects\Full-Stack Dream Journal App\Dream Journal App`
 │   │   │   ├── 📄 Features.jsx
 │   │   │   ├── 📄 Footer.jsx
 │   │   │   ├── 📄 Navbar.jsx
-│   │   │   └── 📄 ProtectedRoute.jsx
+│   │   │   ├── 📄 ProtectedRoute.jsx
+│   │   │   └── 📄 UserMenu.jsx
 │   │   ├── 📁 contexts/
 │   │   │   └── 📄 AuthContext.jsx
 │   │   ├── 📁 pages/
@@ -171,7 +172,8 @@ Root path: `e:\My Projects\Full-Stack Dream Journal App\Dream Journal App`
 │   ├── 📖 README.md
 │   ├── 📄 package-lock.json
 │   ├── 📄 package.json
-│   └── 📄 tailwind.config.js
+│   ├── 📄 tailwind.config.js
+│   └── 📄 vercel.json
 ├── 🚫 .gitignore
 └── 📖 README.md
 ```

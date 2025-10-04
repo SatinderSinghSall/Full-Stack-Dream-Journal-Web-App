@@ -62,7 +62,8 @@ Users can register, log in, and manage their dream entries through a clean, intu
 ## 📂 Project Structure
 
 ```
-├── 📁 frontend/
+📁 frontend/
+│   ├── 📁 .git/ 🚫 (auto-hidden)
 │   ├── 📁 build/ 🚫 (auto-hidden)
 │   ├── 📁 node_modules/ 🚫 (auto-hidden)
 │   ├── 📁 public/
@@ -80,7 +81,8 @@ Users can register, log in, and manage their dream entries through a clean, intu
 │   │   │   ├── 📄 Features.jsx
 │   │   │   ├── 📄 Footer.jsx
 │   │   │   ├── 📄 Navbar.jsx
-│   │   │   └── 📄 ProtectedRoute.jsx
+│   │   │   ├── 📄 ProtectedRoute.jsx
+│   │   │   └── 📄 UserMenu.jsx
 │   │   ├── 📁 contexts/
 │   │   │   └── 📄 AuthContext.jsx
 │   │   ├── 📁 pages/
@@ -104,7 +106,8 @@ Users can register, log in, and manage their dream entries through a clean, intu
 │   ├── 📖 README.md
 │   ├── 📄 package-lock.json
 │   ├── 📄 package.json
-│   └── 📄 tailwind.config.js
+│   ├── 📄 tailwind.config.js
+│   └── 📄 vercel.json
 ```
 
 ---

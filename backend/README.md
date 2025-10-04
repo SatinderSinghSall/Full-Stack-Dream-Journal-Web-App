@@ -86,7 +86,8 @@ Root path: `e:\My Projects\Full-Stack Dream Journal App\Dream Journal App\backen
 │   ├── 📖 README.md
 │   ├── 📄 index.js
 │   ├── 📄 package-lock.json
-│   └── 📄 package.json
+│   ├── 📄 package.json
+│   └── 📄 seedDreams.js
 
 ```
 

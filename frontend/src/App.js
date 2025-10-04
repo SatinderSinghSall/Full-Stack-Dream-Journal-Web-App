@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import DreamEntry from "./pages/DreamEntry";
 import DreamDetails from "./pages/DreamDetails";
+import DreamDashboard from "./pages/DreamDashboard.jsx";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -45,6 +46,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <DreamDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dream-dashboard/analytics"
+            element={
+              <ProtectedRoute>
+                <DreamDashboard />
               </ProtectedRoute>
             }
           />

@@ -87,6 +87,7 @@ Users can register, log in, and manage their dream entries through a clean, intu
 │   │   │   └── 📄 AuthContext.jsx
 │   │   ├── 📁 pages/
 │   │   │   ├── 📄 Dashboard.jsx
+│   │   │   ├── 📄 DreamDashboard.jsx
 │   │   │   ├── 📄 DreamDetails.jsx
 │   │   │   ├── 📄 DreamEntry.jsx
 │   │   │   ├── 📄 Landing.jsx

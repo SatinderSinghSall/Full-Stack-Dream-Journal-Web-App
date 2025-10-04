@@ -22,10 +22,6 @@ const UserMenu = () => {
     toast.info("🚧 Profile section coming soon!");
   };
 
-  const handleDreamDashboardClick = () => {
-    toast.info("🚧 Dream Dashboard coming soon!");
-  };
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -60,7 +56,7 @@ const UserMenu = () => {
             </li>
             <li>
               <Link
-                onClick={handleDreamDashboardClick}
+                to="/dream-dashboard/analytics"
                 className="px-4 py-3 hover:bg-gray-700 cursor-pointer flex items-center gap-2 block"
               >
                 <Users size={16} className="text-indigo-400" /> Dream Dashboard

@@ -70,7 +70,8 @@ Root path: `e:\My Projects\Full-Stack Dream Journal App\Dream Journal App\backen
 │   │   └── 📄 db.js
 │   ├── 📁 controllers/
 │   │   ├── 📄 authController.js
-│   │   └── 📄 dreamController.js
+│   │   ├── 📄 dreamController.js
+│   │   └── 📄 userController.js
 │   ├── 📁 middleware/
 │   │   └── 📄 authMiddleware.js
 │   ├── 📁 models/
@@ -79,7 +80,8 @@ Root path: `e:\My Projects\Full-Stack Dream Journal App\Dream Journal App\backen
 │   ├── 📁 node_modules/ 🚫 (auto-hidden)
 │   ├── 📁 routes/
 │   │   ├── 📄 auth.js
-│   │   └── 📄 dreams.js
+│   │   ├── 📄 dreams.js
+│   │   └── 📄 user.js
 │   ├── 📄 .env.development 🚫 (auto-hidden)
 │   ├── 📄 .env.production 🚫 (auto-hidden)
 │   ├── 🚫 .gitignore

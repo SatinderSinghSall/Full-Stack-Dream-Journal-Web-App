@@ -14,4 +14,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export const getUserProfile = () => api.get("/user/profile");
+export const updateUserProfile = (data) => api.put("/user/profile", data);
+
 export default api;

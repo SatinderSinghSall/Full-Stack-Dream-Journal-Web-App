@@ -18,10 +18,6 @@ const UserMenu = () => {
     navigate("/login");
   };
 
-  const handleUserProfileClick = () => {
-    toast.info("🚧 Profile section coming soon!");
-  };
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -49,7 +45,10 @@ const UserMenu = () => {
         <div className="absolute right-0 mt-2 w-48 bg-gray-800 text-gray-200 border border-gray-700 shadow-xl rounded-xl overflow-hidden z-50 animate-fade-in-up">
           <ul className="text-sm divide-y divide-gray-700">
             <li
-              onClick={handleUserProfileClick}
+              onClick={() => {
+                setOpen(false);
+                navigate("/profile");
+              }}
               className="px-4 py-3 hover:bg-gray-700 cursor-pointer flex items-center gap-2"
             >
               <User size={16} className="text-indigo-400" /> Profile

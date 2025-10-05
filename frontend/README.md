@@ -92,7 +92,8 @@ Users can register, log in, and manage their dream entries through a clean, intu
 │   │   │   ├── 📄 DreamEntry.jsx
 │   │   │   ├── 📄 Landing.jsx
 │   │   │   ├── 📄 Login.jsx
-│   │   │   └── 📄 Signup.jsx
+│   │   │   ├── 📄 Signup.jsx
+│   │   │   └── 📄 UserProfile.jsx
 │   │   ├── 🎨 App.css
 │   │   ├── 📄 App.js
 │   │   ├── 📄 App.test.js

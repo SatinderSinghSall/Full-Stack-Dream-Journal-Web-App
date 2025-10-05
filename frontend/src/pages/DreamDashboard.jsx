@@ -23,6 +23,9 @@ import {
   eachDayOfInterval,
 } from "date-fns";
 import Fuse from "fuse.js";
+import { Link } from "react-router-dom";
+import { FiPlus } from "react-icons/fi";
+
 import api from "../api/api";
 
 const COLORS = ["#6366F1", "#82ca9d", "#facc15", "#f97316", "#06b6d4"];
@@ -35,8 +38,6 @@ export default function AnalyticsDashboard() {
   const [streak, setStreak] = useState(0);
   const [topInsights, setTopInsights] = useState({});
   const [loading, setLoading] = useState(true);
-
-  // New analytics states
   const [dailyHeatmap, setDailyHeatmap] = useState([]);
   const [tagCloud, setTagCloud] = useState([]);
   const [moodTrend, setMoodTrend] = useState([]);
@@ -188,10 +189,59 @@ export default function AnalyticsDashboard() {
 
   if (dreams.length === 0)
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-center text-gray-600">
-        <div className="text-5xl mb-4">🌙</div>
-        <h2 className="text-xl font-semibold mb-1">No dreams yet</h2>
-        <p>Log your dreams to unlock insights.</p>
+      <div className="relative min-h-screen flex flex-col items-center justify-center text-center text-gray-700 bg-gradient-to-br from-indigo-50 via-white to-indigo-50 px-4">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-5 left-5 p-2 rounded-full bg-white shadow hover:shadow-md transition transform hover:-translate-y-1"
+        >
+          <ArrowLeft size={20} />
+        </button>
+
+        {/* Icon */}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-6xl mb-6"
+        >
+          🌙
+        </motion.div>
+
+        {/* Heading */}
+        <motion.h2
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+          className="text-2xl font-bold mb-2"
+        >
+          No dreams yet
+        </motion.h2>
+
+        {/* Subtext */}
+        <motion.p
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+          className="text-gray-500 mb-6"
+        >
+          Log your dreams to unlock insights.
+        </motion.p>
+
+        {/* Add Dream Button */}
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+        >
+          <Link
+            to="/dream/new"
+            className="inline-flex items-center gap-3 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition"
+          >
+            <FiPlus className="text-xl" />
+            Add New Dream
+          </Link>
+        </motion.div>
       </div>
     );
 

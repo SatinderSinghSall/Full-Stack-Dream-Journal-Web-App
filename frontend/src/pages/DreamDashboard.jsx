@@ -10,12 +10,18 @@ import {
   Cell,
   Legend,
   ResponsiveContainer,
+  LineChart,
+  Line,
 } from "recharts";
 import { motion } from "framer-motion";
 import { ArrowLeft, CalendarDays, Smile, Star, Tag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { format, parseISO, differenceInDays } from "date-fns";
-
+import {
+  format,
+  parseISO,
+  differenceInDays,
+  eachDayOfInterval,
+} from "date-fns";
 import Fuse from "fuse.js";
 import api from "../api/api";
 
@@ -29,6 +35,12 @@ export default function AnalyticsDashboard() {
   const [streak, setStreak] = useState(0);
   const [topInsights, setTopInsights] = useState({});
   const [loading, setLoading] = useState(true);
+
+  // New analytics states
+  const [dailyHeatmap, setDailyHeatmap] = useState([]);
+  const [tagCloud, setTagCloud] = useState([]);
+  const [moodTrend, setMoodTrend] = useState([]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -124,6 +136,36 @@ export default function AnalyticsDashboard() {
       daysAgo,
       avgRating: avgRating.toFixed(1),
     });
+
+    // 🌟 Daily Heatmap
+    const start = parseISO(dreams[dreams.length - 1].createdAt);
+    const allDays = eachDayOfInterval({ start, end: new Date() });
+    const heatmap = allDays.map((day) => {
+      const count = dreams.filter(
+        (d) =>
+          format(parseISO(d.createdAt), "yyyy-MM-dd") ===
+          format(day, "yyyy-MM-dd")
+      ).length;
+      return { date: day, count };
+    });
+    setDailyHeatmap(heatmap);
+
+    // 🌟 Tag Cloud
+    const topTags = Object.entries(tagCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 20)
+      .map(([name, count]) => ({ name, count }));
+    setTagCloud(topTags);
+
+    // 🌟 Mood Trend
+    const moodMap = { Happy: 4, Neutral: 3, Sad: 2, Anxious: 1, Excited: 5 }; // example mapping
+    const trend = dreams
+      .map((d) => ({
+        date: format(parseISO(d.createdAt), "yyyy-MM-dd"),
+        moodValue: moodMap[d.mood] || 3,
+      }))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    setMoodTrend(trend);
   };
 
   const MotionCard = ({ children }) => (
@@ -266,6 +308,79 @@ export default function AnalyticsDashboard() {
           </ResponsiveContainer>
         </MotionCard>
       </div>
+
+      {/* 🌟 Mood Trend Line */}
+      <MotionCard>
+        <h3 className="font-semibold mb-4">Mood Trend Over Time</h3>
+        <ResponsiveContainer width="100%" height={250}>
+          <LineChart data={moodTrend}>
+            <XAxis dataKey="date" stroke="#9ca3af" />
+            <YAxis stroke="#9ca3af" domain={[0, 5]} />
+            <Tooltip />
+            <Line type="monotone" dataKey="moodValue" stroke="#6366F1" />
+          </LineChart>
+        </ResponsiveContainer>
+      </MotionCard>
+
+      {/* 🌟 Daily Heatmap */}
+      <MotionCard>
+        <h3 className="font-semibold mb-4">Dream Frequency Heatmap</h3>
+        <div className="grid grid-cols-7 gap-1">
+          {dailyHeatmap.map((day, idx) => {
+            // Dynamic color based on count
+            const intensity = Math.min(day.count / 5, 1); // 0 → 1 scale
+            const colors = [
+              "#E0E7FF",
+              "#C7D2FE",
+              "#A5B4FC",
+              "#818CF8",
+              "#4F46E5",
+            ];
+            const bgColor = colors[Math.floor(intensity * (colors.length - 1))];
+
+            return (
+              <motion.div
+                key={idx}
+                className="w-6 h-6 rounded-full cursor-pointer shadow-sm"
+                style={{ backgroundColor: bgColor }}
+                whileHover={{
+                  scale: 1.3,
+                  boxShadow: "0 0 8px rgba(79, 70, 229, 0.6)",
+                }}
+                transition={{ duration: 0.2 }}
+                title={`${format(day.date, "yyyy-MM-dd")}: ${day.count} dreams`}
+              />
+            );
+          })}
+        </div>
+        <p className="mt-2 text-sm text-gray-500">
+          Darker cells indicate more dreams logged that day.
+        </p>
+      </MotionCard>
+
+      {/* 🌟 Tag Cloud */}
+      <MotionCard>
+        <h3 className="font-semibold mb-4">Top Tags Cloud</h3>
+        <div className="flex flex-wrap gap-3">
+          {tagCloud.map((tag, i) => {
+            const fontSize = 12 + tag.count * 2;
+            const hue = 240 + (i % tagCloud.length) * 20;
+            return (
+              <motion.span
+                key={i}
+                className="cursor-pointer"
+                style={{
+                  fontSize: `${fontSize}px`,
+                  color: `hsl(${hue}, 70%, 50%)`,
+                }}
+                whileHover={{ scale: 1.3, rotate: (Math.random() - 0.5) * 10 }}
+              >
+                {tag.name}
+              </motion.span>
+            );
+          })}
+        </div>
+      </MotionCard>
 
       {/* Recurring Dreams */}
       <MotionCard>

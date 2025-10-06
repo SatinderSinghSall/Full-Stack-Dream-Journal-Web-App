@@ -22,7 +22,7 @@ export default function DreamDetails() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  // Fetch dream details
+  // Fetch all dream details
   useEffect(() => {
     const fetchDream = async () => {
       try {

@@ -69,16 +69,19 @@ Root path: `e:\My Projects\Full-Stack Dream Journal App\Dream Journal App\backen
 │   ├── 📁 config/
 │   │   └── 📄 db.js
 │   ├── 📁 controllers/
+│   │   ├── 📄 adminController.js
 │   │   ├── 📄 authController.js
 │   │   ├── 📄 dreamController.js
 │   │   └── 📄 userController.js
 │   ├── 📁 middleware/
 │   │   └── 📄 authMiddleware.js
 │   ├── 📁 models/
+│   │   ├── 📄 Admin.js
 │   │   ├── 📄 Dream.js
 │   │   └── 📄 User.js
 │   ├── 📁 node_modules/ 🚫 (auto-hidden)
 │   ├── 📁 routes/
+│   │   ├── 📄 admin.js
 │   │   ├── 📄 auth.js
 │   │   ├── 📄 dreams.js
 │   │   └── 📄 user.js
@@ -89,6 +92,7 @@ Root path: `e:\My Projects\Full-Stack Dream Journal App\Dream Journal App\backen
 │   ├── 📄 index.js
 │   ├── 📄 package-lock.json
 │   ├── 📄 package.json
+│   ├── 📄 seedAdmin.js
 │   └── 📄 seedDreams.js
 
 ```

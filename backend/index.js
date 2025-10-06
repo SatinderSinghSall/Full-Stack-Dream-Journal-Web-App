@@ -26,10 +26,13 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-// Routes
+// User Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/dreams", require("./routes/dreams"));
 app.use("/api/user", require("./routes/user"));
+
+// Admin Routes
+app.use("/api/admin", require("./routes/admin"));
 
 app.use("/", (req, res) => {
   res.send("Server's / Backend API is running & LIVE...🚀");

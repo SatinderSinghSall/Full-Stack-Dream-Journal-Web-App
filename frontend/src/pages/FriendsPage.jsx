@@ -42,14 +42,9 @@ const FriendsPage = () => {
 
   const handleAddFriend = async () => {
     if (!emailToAdd) return;
-
     try {
       setAddLoading(true);
-
-      // 1️⃣ Find the user by email
       const { data: user } = await findUserByEmail(emailToAdd);
-
-      // 2️⃣ Check if user exists and has a valid ID
       if (!user || !user._id) {
         setAddMessage({
           type: "error",
@@ -57,8 +52,6 @@ const FriendsPage = () => {
         });
         return;
       }
-
-      // 3️⃣ Send friend request
       const { data } = await sendRequest(user._id);
       setAddMessage({ type: "success", text: data.message });
       setEmailToAdd("");
@@ -83,11 +76,11 @@ const FriendsPage = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-16">
-      <div className="mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-6 py-16">
+      <div className="mb-10">
         <button
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-full px-4 py-2 hover:bg-gray-100 hover:text-indigo-600 shadow transition"
+          className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 bg-white/50 backdrop-blur-lg border border-white/30 rounded-full px-4 py-2 hover:bg-white/70 hover:text-indigo-600 shadow transition"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -96,18 +89,19 @@ const FriendsPage = () => {
 
       <div className="text-center mb-16">
         <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
+          initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="inline-flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600 w-16 h-16 rounded-2xl shadow-lg"
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center justify-center bg-gradient-to-br from-indigo-300 to-purple-300 text-white w-20 h-20 rounded-3xl shadow-lg ring-4 ring-white/40"
         >
-          <Users className="w-7 h-7" />
+          <Users className="w-8 h-8" />
         </motion.div>
         <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-gray-900">
-          Friends Dashboard
+          Friends & Dreams
         </h1>
-        <p className="mt-3 text-gray-500 text-lg">
-          Connect, grow, and keep each other accountable.
+        <p className="mt-3 text-gray-500 text-lg max-w-md mx-auto">
+          Stay connected in your dream journey — share, reflect, and grow
+          together.
         </p>
       </div>
 
@@ -121,9 +115,14 @@ const FriendsPage = () => {
       </motion.div>
 
       {/* Add Friend Section */}
-      <div className="bg-white/70 backdrop-blur-lg border border-gray-200 rounded-3xl p-6 max-w-2xl mx-auto shadow-xl mb-16">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="bg-white/60 backdrop-blur-xl border border-white/30 rounded-3xl p-8 max-w-2xl mx-auto shadow-lg mb-16"
+      >
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Add a New Friend
+          Add a New Dream Mate
         </h2>
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <input
@@ -131,20 +130,26 @@ const FriendsPage = () => {
             placeholder="Enter friend’s email"
             value={emailToAdd}
             onChange={(e) => setEmailToAdd(e.target.value)}
-            className="flex-1 w-full px-5 py-3 rounded-xl border border-gray-300 bg-white shadow-md focus:ring-2 focus:ring-indigo-500 focus:outline-none transition text-gray-700"
+            className="flex-1 w-full px-5 py-3 rounded-xl border border-white/50 bg-white/60 shadow-inner focus:ring-2 focus:ring-indigo-400 focus:outline-none text-gray-700 placeholder-gray-400"
           />
           <button
             onClick={handleAddFriend}
             disabled={addLoading}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-br from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:opacity-90 transition font-semibold shadow-lg"
+            className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-200 ${
+              addLoading
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gradient-to-br from-indigo-500 to-purple-500 text-white hover:shadow-xl hover:scale-[1.02]"
+            }`}
           >
             {addLoading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" /> Sending...
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Sending...</span>
               </>
             ) : (
               <>
-                <User className="w-4 h-4" /> Send Request
+                <User className="w-4 h-4" />
+                <span>Send Request</span>
               </>
             )}
           </button>
@@ -158,14 +163,15 @@ const FriendsPage = () => {
             {addMessage.text}
           </p>
         )}
-      </div>
+      </motion.div>
 
+      {/* Friends Grid */}
       {loading ? (
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 py-10">
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="bg-white/70 backdrop-blur-md rounded-3xl p-6 shadow-md border border-gray-100"
+              className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 shadow-md border border-white/40"
             >
               <div className="flex items-center gap-4">
                 <Skeleton className="w-12 h-12 rounded-xl" />
@@ -185,7 +191,7 @@ const FriendsPage = () => {
         >
           <UserX2 className="h-10 w-10 mb-2 text-gray-400" />
           <p className="text-lg font-medium">
-            No friends yet. Start building your circle!
+            No dream companions yet. Add someone to begin!
           </p>
         </motion.div>
       ) : (
@@ -197,14 +203,14 @@ const FriendsPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
               onClick={() => handleFriendClick(friend._id)}
-              className="cursor-pointer group bg-white/80 backdrop-blur-md rounded-3xl p-6 shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all"
+              className="cursor-pointer group bg-white/70 backdrop-blur-lg rounded-3xl p-6 shadow-lg border border-white/40 hover:shadow-2xl hover:-translate-y-1 transition-all"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-200 to-purple-200 text-indigo-700 text-base font-bold shadow">
+                <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-300 to-purple-300 text-white font-bold shadow-inner">
                   {friend.name?.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-indigo-700 transition">
+                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-indigo-600 transition">
                     {friend.name}
                   </h3>
                   <p

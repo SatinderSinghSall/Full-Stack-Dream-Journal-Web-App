@@ -407,7 +407,7 @@ Backend runs on [http://localhost:5000](http://localhost:5000).
 - [ ] Export + Dark mode
 - [ ] AI-powered dream summaries
 - [ ] Voice notes + PWA support
-- [ ] Community features (sharing, comments, feed)
+- [x] Community features (sharing, comments, feed)
 
 ---
 

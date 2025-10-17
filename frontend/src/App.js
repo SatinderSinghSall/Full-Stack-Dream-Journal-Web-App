@@ -12,6 +12,7 @@ import DreamEntry from "./pages/DreamEntry";
 import DreamDetails from "./pages/DreamDetails";
 import DreamDashboard from "./pages/DreamDashboard.jsx";
 import UserProfile from "./pages/UserProfile";
+import FriendsPage from "./pages/FriendsPage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -65,6 +66,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <UserProfile />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/friends"
+            element={
+              <ProtectedRoute>
+                <FriendsPage />
               </ProtectedRoute>
             }
           />

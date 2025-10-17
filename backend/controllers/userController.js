@@ -40,3 +40,21 @@ exports.updateUserProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.findUserByEmail = async (req, res) => {
+  try {
+    const email = req.params.email.toLowerCase(); // match lowercase in DB
+    const user = await User.findOne({ email }).select("_id name email");
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "No user found with this email." });
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error("Find user by email error:", err);
+    res.status(500).json({ message: "Server error." });
+  }
+};

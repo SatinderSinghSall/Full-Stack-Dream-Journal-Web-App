@@ -30,6 +30,7 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/dreams", require("./routes/dreams"));
 app.use("/api/user", require("./routes/user"));
+app.use("/api/friends", require("./routes/friend"));
 
 // Admin Routes
 app.use("/api/admin", require("./routes/admin"));

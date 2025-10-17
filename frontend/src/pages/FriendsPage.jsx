@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Loader2, Users, UserX2, User, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 import {
   getFriends,
   sendRequest,
   getFriendProgress,
   findUserByEmail,
 } from "../api/api";
-import { motion } from "framer-motion";
-import { Loader2, Users, UserX2, User, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 import FriendRequests from "../components/FriendRequests";
 import SentRequests from "../components/SentRequests";
 import ProgressModal from "../components/ProgressModal";
+import Skeleton from "../components/Skeleton";
 
 const FriendsPage = () => {
   const [friends, setFriends] = useState([]);
@@ -158,8 +161,21 @@ const FriendsPage = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center py-20">
-          <Loader2 className="animate-spin h-8 w-8 text-indigo-600" />
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 py-10">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="bg-white/70 backdrop-blur-md rounded-3xl p-6 shadow-md border border-gray-100"
+            >
+              <div className="flex items-center gap-4">
+                <Skeleton className="w-12 h-12 rounded-xl" />
+                <div className="flex-1 space-y-3">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : friends.length === 0 ? (
         <motion.div

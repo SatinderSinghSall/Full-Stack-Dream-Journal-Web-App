@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2, XCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
+
 import { getSent, cancelRequest } from "../api/api";
+
+import Skeleton from "./Skeleton";
 
 const SentRequests = () => {
   const [sent, setSent] = useState([]);
@@ -29,8 +32,24 @@ const SentRequests = () => {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center py-6">
-        <Loader2 className="animate-spin h-5 w-5 text-indigo-600" />
+      <div className="bg-white/80 backdrop-blur-lg border border-gray-200 rounded-3xl p-6 shadow-lg mb-10">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Sent Friend Requests
+        </h2>
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between p-3 bg-gray-50 rounded-xl shadow-sm"
+            >
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+              <Skeleton className="h-8 w-20 rounded-xl" />
+            </div>
+          ))}
+        </div>
       </div>
     );
 

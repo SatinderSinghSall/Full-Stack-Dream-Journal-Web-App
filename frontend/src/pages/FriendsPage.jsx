@@ -8,6 +8,7 @@ import {
   sendRequest,
   getFriendProgress,
   findUserByEmail,
+  deleteFriend,
 } from "../api/api";
 
 import FriendRequests from "../components/FriendRequests";
@@ -202,10 +203,12 @@ const FriendsPage = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              onClick={() => handleFriendClick(friend._id)}
-              className="cursor-pointer group bg-white/70 backdrop-blur-lg rounded-3xl p-6 shadow-lg border border-white/40 hover:shadow-2xl hover:-translate-y-1 transition-all"
+              className="relative group bg-white/70 backdrop-blur-lg rounded-3xl p-6 shadow-lg border border-white/40 hover:shadow-2xl hover:-translate-y-1 transition-all"
             >
-              <div className="flex items-center gap-4">
+              <div
+                onClick={() => handleFriendClick(friend._id)}
+                className="flex items-center gap-4 cursor-pointer"
+              >
                 <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-300 to-purple-300 text-white font-bold shadow-inner">
                   {friend.name?.charAt(0).toUpperCase()}
                 </div>
@@ -221,6 +224,30 @@ const FriendsPage = () => {
                   </p>
                 </div>
               </div>
+
+              {/* 🗑️ Delete Friend Button */}
+              <button
+                onClick={async (e) => {
+                  e.stopPropagation(); // prevent triggering progress modal
+                  if (!window.confirm(`Remove ${friend.name} as a friend?`))
+                    return;
+
+                  try {
+                    await deleteFriend(friend._id);
+                    setFriends((prev) =>
+                      prev.filter((f) => f._id !== friend._id)
+                    );
+                  } catch (err) {
+                    alert(
+                      err.response?.data?.message || "Failed to delete friend"
+                    );
+                  }
+                }}
+                className="absolute top-4 right-4 text-red-500 hover:text-red-700 transition"
+                title="Remove friend"
+              >
+                <UserX2 className="w-5 h-5" />
+              </button>
             </motion.div>
           ))}
         </div>

@@ -16,6 +16,7 @@ api.interceptors.request.use((config) => {
 // 🧍 User endpoints
 export const getUserProfile = () => api.get("/user/profile");
 export const updateUserProfile = (data) => api.put("/user/profile", data);
+export const deleteFriend = (id) => api.delete(`/friends/${id}`);
 
 // 🧑‍🤝‍🧑 Friend system endpoints
 export const getFriends = () => api.get("/friends");

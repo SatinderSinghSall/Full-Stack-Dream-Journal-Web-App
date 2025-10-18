@@ -1,5 +1,11 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { LogOut, User, ChevronDown, Users } from "lucide-react";
+import {
+  LogOut,
+  User,
+  ChevronDown,
+  Users,
+  LayoutDashboard,
+} from "lucide-react";
 import { AuthContext } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -58,7 +64,16 @@ const UserMenu = () => {
                 to="/dream-dashboard/analytics"
                 className="px-4 py-3 hover:bg-gray-700 cursor-pointer flex items-center gap-2 block"
               >
-                <Users size={16} className="text-indigo-400" /> Dream Dashboard
+                <LayoutDashboard size={16} className="text-indigo-400" /> Dream
+                Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/friends"
+                className="px-4 py-3 hover:bg-gray-700 cursor-pointer flex items-center gap-2 block"
+              >
+                <Users size={16} className="text-indigo-400" /> Friends
               </Link>
             </li>
             <li

@@ -9,6 +9,7 @@ const {
   getSentRequests,
   cancelFriendRequest,
   getFriendProgress,
+  deleteFriend,
 } = require("../controllers/friendController");
 const { authMiddleware } = require("../middleware/authMiddleware");
 
@@ -20,6 +21,7 @@ router.post("/request/:id", authMiddleware, sendFriendRequest);
 router.post("/accept/:id", authMiddleware, acceptFriendRequest);
 router.post("/reject/:id", authMiddleware, rejectFriendRequest);
 router.post("/cancel/:id", authMiddleware, cancelFriendRequest);
+router.delete("/:id", authMiddleware, deleteFriend);
 
 router.get("/progress/:id", authMiddleware, getFriendProgress);
 

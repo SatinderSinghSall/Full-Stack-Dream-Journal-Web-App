@@ -152,3 +152,35 @@ exports.getFriendProgress = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch friend's progress" });
   }
 };
+
+// 🗑️ Delete (unfriend) a friend
+exports.deleteFriend = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const friendId = req.params.id;
+
+    // Find both users
+    const user = await User.findById(userId);
+    const friend = await User.findById(friendId);
+
+    if (!user || !friend)
+      return res.status(404).json({ message: "User not found" });
+
+    // Check if they are actually friends
+    if (!user.friends.includes(friendId)) {
+      return res.status(400).json({ message: "This user is not your friend." });
+    }
+
+    // Remove each other from friends list
+    user.friends.pull(friendId);
+    friend.friends.pull(userId);
+
+    await user.save();
+    await friend.save();
+
+    res.status(200).json({ message: "Friend removed successfully." });
+  } catch (err) {
+    console.error("Error deleting friend:", err);
+    res.status(500).json({ message: "Failed to delete friend." });
+  }
+};

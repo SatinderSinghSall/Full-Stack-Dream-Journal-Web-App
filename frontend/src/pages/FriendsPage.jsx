@@ -43,9 +43,11 @@ const FriendsPage = () => {
 
   const handleAddFriend = async () => {
     if (!emailToAdd) return;
+
     try {
       setAddLoading(true);
       const { data: user } = await findUserByEmail(emailToAdd);
+
       if (!user || !user._id) {
         setAddMessage({
           type: "error",
@@ -53,9 +55,15 @@ const FriendsPage = () => {
         });
         return;
       }
+
       const { data } = await sendRequest(user._id);
       setAddMessage({ type: "success", text: data.message });
       setEmailToAdd("");
+
+      // Wait a moment to show success, then reload once
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     } catch (err) {
       console.error("Add friend error:", err);
       setAddMessage({

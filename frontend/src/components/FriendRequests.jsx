@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { UserCheck2, UserX2 } from "lucide-react";
+import { UserCheck2, UserX2, Loader2 } from "lucide-react";
 
 import { getRequests, acceptRequest, rejectRequest } from "../api/api";
-
 import Skeleton from "./Skeleton";
 
 const FriendRequests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState({ id: null, action: null });
 
   const fetchRequests = async () => {
     try {
@@ -26,13 +26,25 @@ const FriendRequests = () => {
   }, []);
 
   const handleAccept = async (id) => {
-    await acceptRequest(id);
-    setRequests((prev) => prev.filter((r) => r._id !== id));
+    setProcessing({ id, action: "accept" });
+    try {
+      await acceptRequest(id);
+      setTimeout(() => window.location.reload(), 800);
+    } catch (err) {
+      console.error("Error accepting request:", err);
+      setProcessing({ id: null, action: null });
+    }
   };
 
   const handleReject = async (id) => {
-    await rejectRequest(id);
-    setRequests((prev) => prev.filter((r) => r._id !== id));
+    setProcessing({ id, action: "reject" });
+    try {
+      await rejectRequest(id);
+      setTimeout(() => window.location.reload(), 800);
+    } catch (err) {
+      console.error("Error rejecting request:", err);
+      setProcessing({ id: null, action: null });
+    }
   };
 
   if (loading)
@@ -82,18 +94,46 @@ const FriendRequests = () => {
               <p className="font-semibold text-gray-800">{req.name}</p>
               <p className="text-sm text-gray-500">{req.email}</p>
             </div>
+
             <div className="flex gap-2">
               <button
                 onClick={() => handleAccept(req._id)}
-                className="flex items-center gap-1 bg-green-500 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-green-600 transition"
+                disabled={processing.id === req._id}
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-medium transition ${
+                  processing.id === req._id && processing.action === "accept"
+                    ? "bg-green-400 cursor-not-allowed text-white"
+                    : "bg-green-500 hover:bg-green-600 text-white"
+                }`}
               >
-                <UserCheck2 className="w-4 h-4" /> Accept
+                {processing.id === req._id && processing.action === "accept" ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Accepting...
+                  </>
+                ) : (
+                  <>
+                    <UserCheck2 className="w-4 h-4" /> Accept
+                  </>
+                )}
               </button>
+
               <button
                 onClick={() => handleReject(req._id)}
-                className="flex items-center gap-1 bg-red-500 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-red-600 transition"
+                disabled={processing.id === req._id}
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-medium transition ${
+                  processing.id === req._id && processing.action === "reject"
+                    ? "bg-red-400 cursor-not-allowed text-white"
+                    : "bg-red-500 hover:bg-red-600 text-white"
+                }`}
               >
-                <UserX2 className="w-4 h-4" /> Reject
+                {processing.id === req._id && processing.action === "reject" ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Rejecting...
+                  </>
+                ) : (
+                  <>
+                    <UserX2 className="w-4 h-4" /> Reject
+                  </>
+                )}
               </button>
             </div>
           </div>

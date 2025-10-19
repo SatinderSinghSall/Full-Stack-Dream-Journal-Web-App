@@ -15,6 +15,7 @@ import FriendRequests from "../components/FriendRequests";
 import SentRequests from "../components/SentRequests";
 import ProgressModal from "../components/ProgressModal";
 import Skeleton from "../components/Skeleton";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 const FriendsPage = () => {
   const [friends, setFriends] = useState([]);
@@ -23,6 +24,10 @@ const FriendsPage = () => {
   const [addLoading, setAddLoading] = useState(false);
   const [addMessage, setAddMessage] = useState(null);
   const [selectedFriendProgress, setSelectedFriendProgress] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState({
+    open: false,
+    friend: null,
+  });
 
   const navigate = useNavigate();
 
@@ -235,21 +240,9 @@ const FriendsPage = () => {
 
               {/* 🗑️ Delete Friend Button */}
               <button
-                onClick={async (e) => {
-                  e.stopPropagation(); // prevent triggering progress modal
-                  if (!window.confirm(`Remove ${friend.name} as a friend?`))
-                    return;
-
-                  try {
-                    await deleteFriend(friend._id);
-                    setFriends((prev) =>
-                      prev.filter((f) => f._id !== friend._id)
-                    );
-                  } catch (err) {
-                    alert(
-                      err.response?.data?.message || "Failed to delete friend"
-                    );
-                  }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setConfirmDelete({ open: true, friend });
                 }}
                 className="absolute top-4 right-4 text-red-500 hover:text-red-700 transition"
                 title="Remove friend"
@@ -266,6 +259,26 @@ const FriendsPage = () => {
           isOpen={!!selectedFriendProgress}
           progressData={selectedFriendProgress}
           onClose={() => setSelectedFriendProgress(null)}
+        />
+      )}
+
+      {confirmDelete.open && (
+        <ConfirmDeleteModal
+          isOpen={confirmDelete.open}
+          friendName={confirmDelete.friend?.name}
+          onClose={() => setConfirmDelete({ open: false, friend: null })}
+          onConfirm={async () => {
+            try {
+              await deleteFriend(confirmDelete.friend._id);
+              setFriends((prev) =>
+                prev.filter((f) => f._id !== confirmDelete.friend._id)
+              );
+            } catch (err) {
+              alert(err.response?.data?.message || "Failed to delete friend");
+            } finally {
+              setConfirmDelete({ open: false, friend: null });
+            }
+          }}
         />
       )}
     </div>

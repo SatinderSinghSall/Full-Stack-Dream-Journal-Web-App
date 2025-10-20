@@ -9,7 +9,10 @@ import {
   getFriendProgress,
   findUserByEmail,
   deleteFriend,
+  searchUsers,
 } from "../api/api";
+
+import { useDebounce } from "../hooks/useDebounce";
 
 import FriendRequests from "../components/FriendRequests";
 import SentRequests from "../components/SentRequests";
@@ -28,6 +31,10 @@ const FriendsPage = () => {
     open: false,
     friend: null,
   });
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const debouncedSearch = useDebounce(emailToAdd, 300);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const navigate = useNavigate();
 
@@ -46,26 +53,39 @@ const FriendsPage = () => {
     fetchFriends();
   }, []);
 
-  const handleAddFriend = async () => {
-    if (!emailToAdd) return;
-
-    try {
-      setAddLoading(true);
-      const { data: user } = await findUserByEmail(emailToAdd);
-
-      if (!user || !user._id) {
-        setAddMessage({
-          type: "error",
-          text: "No user found with this email.",
-        });
+  useEffect(() => {
+    const fetchSearchResults = async () => {
+      if (!debouncedSearch) {
+        setSearchResults([]);
         return;
       }
 
-      const { data } = await sendRequest(user._id);
+      try {
+        setSearchLoading(true);
+        const { data } = await searchUsers(debouncedSearch);
+        setSearchResults(data);
+      } catch (err) {
+        console.error("Search users error:", err);
+      } finally {
+        setSearchLoading(false);
+      }
+    };
+
+    fetchSearchResults();
+  }, [debouncedSearch]);
+
+  const handleAddFriend = async () => {
+    const userToAdd = selectedUser;
+    if (!userToAdd) return;
+
+    try {
+      setAddLoading(true);
+      const { data } = await sendRequest(userToAdd._id);
       setAddMessage({ type: "success", text: data.message });
       setEmailToAdd("");
+      setSelectedUser(null);
+      setSearchResults([]);
 
-      // Wait a moment to show success, then reload once
       setTimeout(() => {
         window.location.reload();
       }, 100);
@@ -129,53 +149,93 @@ const FriendsPage = () => {
       </motion.div>
 
       {/* Add Friend Section */}
+      {/* 🌙 Add Friend Section */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="bg-white/60 backdrop-blur-xl border border-white/30 rounded-3xl p-8 max-w-2xl mx-auto shadow-lg mb-16"
+        className="relative bg-gradient-to-br from-white/80 via-white/70 to-indigo-50 backdrop-blur-xl border border-white/40 rounded-3xl p-10 max-w-2xl mx-auto shadow-xl hover:shadow-2xl transition mb-20"
       >
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Add a New Dream Mate
-        </h2>
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Add a New Dream Mate ✨
+          </h2>
+          <p className="text-gray-500 text-sm">
+            Search by name or email to send a dream connection request.
+          </p>
+        </div>
+
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <input
-            type="email"
-            placeholder="Enter friend’s email"
-            value={emailToAdd}
-            onChange={(e) => setEmailToAdd(e.target.value)}
-            className="flex-1 w-full px-5 py-3 rounded-xl border border-white/50 bg-white/60 shadow-inner focus:ring-2 focus:ring-indigo-400 focus:outline-none text-gray-700 placeholder-gray-400"
-          />
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Search by name or email..."
+              value={emailToAdd}
+              onChange={(e) => setEmailToAdd(e.target.value)}
+              className="w-full px-5 py-3.5 rounded-2xl border border-gray-200 bg-white/70 shadow-inner text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition"
+            />
+
+            {/* 🔍 Suggestions Dropdown */}
+            {emailToAdd && searchResults.length > 0 && (
+              <div className="absolute top-full left-0 right-0 bg-white rounded-2xl shadow-lg mt-2 z-10 border border-gray-100 max-h-64 overflow-y-auto animate-fadeIn">
+                {searchResults.map((user) => (
+                  <div
+                    key={user._id}
+                    onClick={() => {
+                      setEmailToAdd(user.email);
+                      setSelectedUser(user);
+                      setSearchResults([]);
+                    }}
+                    className="px-4 py-3 hover:bg-indigo-50 hover:text-indigo-700 cursor-pointer transition flex flex-col"
+                  >
+                    <p className="font-medium">{user.name}</p>
+                    <p className="text-sm text-gray-500">{user.email}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {searchLoading && (
+              <div className="absolute top-full left-0 right-0 bg-white text-gray-500 text-sm py-3 px-4 rounded-b-2xl border border-gray-100 shadow animate-pulse">
+                Searching...
+              </div>
+            )}
+          </div>
+
           <button
             onClick={handleAddFriend}
-            disabled={addLoading}
-            className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-200 ${
-              addLoading
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-br from-indigo-500 to-purple-500 text-white hover:shadow-xl hover:scale-[1.02]"
+            disabled={addLoading || !selectedUser}
+            className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl font-semibold shadow-md transition-all duration-200 ${
+              addLoading || !selectedUser
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white hover:shadow-lg hover:scale-[1.03]"
             }`}
           >
             {addLoading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Sending...</span>
+                <Loader2 className="w-5 h-5 animate-spin flex-shrink-0 relative top-[1px]" />
+                <span className="leading-none">Sending...</span>
               </>
             ) : (
               <>
-                <User className="w-4 h-4" />
-                <span>Send Request</span>
+                {/* tweak `top-[1px]` to `-top-[1px]` or remove if you prefer */}
+                <User className="w-5 h-5 flex-shrink-0 relative top-[1px]" />
+                <span className="leading-none">Send Request</span>
               </>
             )}
           </button>
         </div>
+
         {addMessage && (
-          <p
-            className={`mt-3 text-sm ${
+          <motion.p
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`mt-4 text-sm text-center ${
               addMessage.type === "error" ? "text-red-500" : "text-green-600"
             }`}
           >
             {addMessage.text}
-          </p>
+          </motion.p>
         )}
       </motion.div>
 

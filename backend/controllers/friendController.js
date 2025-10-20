@@ -184,3 +184,35 @@ exports.deleteFriend = async (req, res) => {
     res.status(500).json({ message: "Failed to delete friend." });
   }
 };
+
+// 🔍 Search users by name or email
+exports.searchUsers = async (req, res) => {
+  try {
+    const query = req.query.q?.trim();
+    const currentUserId = req.user.id;
+
+    if (!query) {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    // Search by name or email, exclude yourself
+    const users = await User.find({
+      $and: [
+        { _id: { $ne: currentUserId } },
+        {
+          $or: [
+            { name: { $regex: query, $options: "i" } },
+            { email: { $regex: query, $options: "i" } },
+          ],
+        },
+      ],
+    })
+      .select("name email") // only return needed fields
+      .limit(5);
+
+    res.status(200).json(users);
+  } catch (err) {
+    console.error("Search users error:", err);
+    res.status(500).json({ message: "Failed to search users" });
+  }
+};

@@ -1,10 +1,11 @@
 import axios from "axios";
 
+// Create axios instance with base URL
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
-// ✅ Attach JWT to all requests
+// ✅ Attach JWT to all requests automatically
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -31,5 +32,9 @@ export const cancelRequest = (id) => api.post(`/friends/cancel/${id}`);
 export const getFriendProgress = (id) => api.get(`/friends/progress/${id}`);
 export const findUserByEmail = (email) =>
   api.get(`/user/findByEmail/${encodeURIComponent(email)}`);
+
+// 🔍 User search endpoint
+export const searchUsers = (query) =>
+  api.get(`/friends/search?q=${encodeURIComponent(query)}`);
 
 export default api;

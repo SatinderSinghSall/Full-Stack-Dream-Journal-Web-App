@@ -10,12 +10,15 @@ const {
   cancelFriendRequest,
   getFriendProgress,
   deleteFriend,
+  searchUsers,
 } = require("../controllers/friendController");
 const { authMiddleware } = require("../middleware/authMiddleware");
 
 router.get("/", authMiddleware, getFriendsList);
 router.get("/requests", authMiddleware, getPendingRequests);
 router.get("/sent", authMiddleware, getSentRequests);
+
+router.get("/search", authMiddleware, searchUsers);
 
 router.post("/request/:id", authMiddleware, sendFriendRequest);
 router.post("/accept/:id", authMiddleware, acceptFriendRequest);

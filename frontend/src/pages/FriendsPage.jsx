@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Loader2, Users, UserX2, User, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import {
   getFriends,
@@ -85,16 +86,18 @@ const FriendsPage = () => {
       setEmailToAdd("");
       setSelectedUser(null);
       setSearchResults([]);
+      toast.success("Request send to friend successfully!");
 
       setTimeout(() => {
         window.location.reload();
-      }, 100);
+      }, 4000);
     } catch (err) {
       console.error("Add friend error:", err);
       setAddMessage({
         type: "error",
         text: err.response?.data?.message || "Failed to send request",
       });
+      toast.error("Failed to send request." || err);
     } finally {
       setAddLoading(false);
     }

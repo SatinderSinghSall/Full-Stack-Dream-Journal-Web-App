@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { XCircle } from "lucide-react";
+import { XCircle, Loader2 } from "lucide-react";
 
 import { getSent, cancelRequest } from "../api/api";
-
 import Skeleton from "./Skeleton";
 
 const SentRequests = () => {
   const [sent, setSent] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [canceling, setCanceling] = useState(null);
 
   const fetchSent = async () => {
     try {
@@ -26,8 +26,15 @@ const SentRequests = () => {
   }, []);
 
   const handleCancel = async (id) => {
-    await cancelRequest(id);
-    setSent((prev) => prev.filter((r) => r._id !== id));
+    setCanceling(id);
+    try {
+      await cancelRequest(id);
+      setSent((prev) => prev.filter((r) => r._id !== id));
+    } catch (err) {
+      console.error("Failed to cancel request:", err);
+    } finally {
+      setCanceling(null);
+    }
   };
 
   if (loading)
@@ -74,11 +81,25 @@ const SentRequests = () => {
               <p className="font-semibold text-gray-800">{req.name}</p>
               <p className="text-sm text-gray-500">{req.email}</p>
             </div>
+
             <button
               onClick={() => handleCancel(req._id)}
-              className="flex items-center gap-1 bg-red-100 text-red-600 px-3 py-2 rounded-xl text-sm font-medium hover:bg-red-200 transition"
+              disabled={canceling === req._id}
+              className={`flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-medium transition ${
+                canceling === req._id
+                  ? "bg-red-200 text-red-500 cursor-not-allowed"
+                  : "bg-red-100 text-red-600 hover:bg-red-200"
+              }`}
             >
-              <XCircle className="w-4 h-4" /> Cancel
+              {canceling === req._id ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Canceling...
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-4 h-4" /> Cancel
+                </>
+              )}
             </button>
           </div>
         ))}

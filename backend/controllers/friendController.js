@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const Dream = require("../models/Dream");
+const { sendEmail } = require("../utils/email");
+const { friendRequestTemplate } = require("../utils/emailTemplates");
 
 // 📤 Send friend request
 exports.sendFriendRequest = async (req, res) => {
@@ -7,45 +9,45 @@ exports.sendFriendRequest = async (req, res) => {
     const fromUserId = req.user.id;
     const toUserId = req.params.id;
 
-    // 1️⃣ Check if the ID is valid
     if (!toUserId || toUserId === "undefined") {
       return res.status(400).json({ message: "Invalid or missing user ID" });
     }
 
-    // 2️⃣ Prevent sending request to yourself
     if (fromUserId === toUserId) {
       return res.status(400).json({ message: "You cannot add yourself." });
     }
 
-    // 3️⃣ Fetch sender and recipient safely
-    let sender, recipient;
-    try {
-      sender = await User.findById(fromUserId);
-      recipient = await User.findById(toUserId);
-    } catch (err) {
-      return res.status(400).json({ message: "Invalid user ID format" });
-    }
+    const sender = await User.findById(fromUserId);
+    const recipient = await User.findById(toUserId);
 
     if (!recipient) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // 4️⃣ Check if already friends
     if (sender.friends.includes(toUserId)) {
       return res.status(400).json({ message: "Already friends." });
     }
 
-    // 5️⃣ Check if request already sent
     if (recipient.friendRequests.includes(fromUserId)) {
       return res.status(400).json({ message: "Request already sent." });
     }
 
-    // 6️⃣ Add to sent and received requests
     sender.sentRequests.push(toUserId);
     recipient.friendRequests.push(fromUserId);
 
     await sender.save();
     await recipient.save();
+
+    // 💌 Send email notification
+    try {
+      await sendEmail({
+        to: recipient.email,
+        subject: `${sender.name} wants to be your DreamMate! 🌙`,
+        html: friendRequestTemplate(sender.name),
+      });
+    } catch (emailErr) {
+      console.error("Failed to send friend request email:", emailErr);
+    }
 
     res.status(200).json({ message: "Friend request sent!" });
   } catch (err) {

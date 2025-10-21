@@ -37,4 +37,7 @@ export const findUserByEmail = (email) =>
 export const searchUsers = (query) =>
   api.get(`/friends/search?q=${encodeURIComponent(query)}`);
 
+// 🌟 Dream Endpoint
+export const getDreams = () => api.get("/dreams");
+
 export default api;

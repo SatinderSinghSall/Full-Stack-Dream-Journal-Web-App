@@ -11,9 +11,13 @@ import {
   User as UserIcon,
   Users,
   Send,
+  Moon,
+  Star,
+  BarChart3,
 } from "lucide-react";
+import { getUserProfile, updateUserProfile, getDreams } from "../api/api";
 
-import { getUserProfile, updateUserProfile } from "../api/api";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
@@ -24,23 +28,29 @@ export default function UserProfile() {
     status: "Active",
   });
   const [saving, setSaving] = useState(false);
+  const [dreams, setDreams] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchData = async () => {
       try {
-        const res = await getUserProfile();
-        setUser(res.data);
+        const [userRes, dreamsRes] = await Promise.all([
+          getUserProfile(),
+          getDreams(),
+        ]);
+        const userData = userRes.data;
+        setUser(userData);
         setFormData({
-          name: res.data.name,
-          email: res.data.email,
-          status: res.data.status,
+          name: userData.name,
+          email: userData.email,
+          status: userData.status,
         });
+        setDreams(dreamsRes.data || []);
       } catch (err) {
         console.error(err);
       }
     };
-    fetchUser();
+    fetchData();
   }, []);
 
   const handleSave = async () => {
@@ -63,17 +73,38 @@ export default function UserProfile() {
       </div>
     );
 
+  // 🧮 DREAM STATS
+  const totalDreams = dreams.length;
+  const avgRating =
+    dreams.length > 0
+      ? (
+          dreams.reduce((sum, d) => sum + (d.rating || 0), 0) / dreams.length
+        ).toFixed(1)
+      : "—";
+  const moodCounts = dreams.reduce((acc, d) => {
+    acc[d.mood] = (acc[d.mood] || 0) + 1;
+    return acc;
+  }, {});
+  const mostCommonMood =
+    Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "—";
+
+  const moodData = Object.entries(moodCounts).map(([mood, count]) => ({
+    name: mood,
+    value: count,
+  }));
+
+  const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"];
+
   return (
     <div className="min-h-screen bg-gray-50 flex justify-center items-center px-4 py-10">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-3xl bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+        className="w-full max-w-5xl bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
       >
         {/* Header */}
         <div className="relative bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-48 flex flex-col items-center justify-center rounded-t-2xl text-white">
-          {/* Back Button */}
           <button
             onClick={() => navigate(-1)}
             className="absolute top-3 left-3 bg-white/20 hover:bg-white/40 rounded-full p-2 text-white transition"
@@ -81,7 +112,6 @@ export default function UserProfile() {
             <ArrowLeft size={20} />
           </button>
 
-          {/* Header Content */}
           <div className="text-center mt-1">
             <h1 className="text-2xl font-semibold tracking-wide">My Profile</h1>
             <p className="text-sm opacity-90 mt-0.5">{user.email}</p>
@@ -90,7 +120,6 @@ export default function UserProfile() {
             </p>
           </div>
 
-          {/* Avatar */}
           <div className="absolute -bottom-14 w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
             <img
               src={`https://api.dicebear.com/9.x/avataaars/svg?seed=${user.name}`}
@@ -235,6 +264,104 @@ export default function UserProfile() {
                   <li key={f._id}>{f.name || f}</li>
                 ))}
               </ul>
+            </div>
+          </div>
+
+          {/* 🌙 DREAMS OVERVIEW */}
+          <div className="mt-10">
+            <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+              <Moon size={22} className="text-indigo-500" /> Dream Overview
+            </h2>
+
+            <div className="grid md:grid-cols-3 gap-6 mt-6">
+              <div className="bg-white rounded-xl shadow p-5 text-center hover:shadow-lg transition">
+                <BarChart3 size={28} className="mx-auto text-indigo-500 mb-2" />
+                <h3 className="text-lg font-semibold text-gray-700">
+                  Total Dreams
+                </h3>
+                <p className="text-gray-600 mt-1 text-2xl font-bold">
+                  {totalDreams}
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow p-5 text-center hover:shadow-lg transition">
+                <Star size={28} className="mx-auto text-yellow-500 mb-2" />
+                <h3 className="text-lg font-semibold text-gray-700">
+                  Avg Rating
+                </h3>
+                <p className="text-gray-600 mt-1 text-2xl font-bold">
+                  {avgRating}
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow p-5 text-center hover:shadow-lg transition">
+                <Moon size={28} className="mx-auto text-pink-500 mb-2" />
+                <h3 className="text-lg font-semibold text-gray-700">
+                  Common Mood
+                </h3>
+                <p className="text-gray-600 mt-1 text-2xl font-bold">
+                  {mostCommonMood}
+                </p>
+              </div>
+            </div>
+
+            {/* Mood Distribution Chart */}
+            {dreams.length > 0 && (
+              <div className="mt-10 bg-white rounded-xl shadow p-5">
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                  Mood Distribution
+                </h3>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={moodData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      label
+                    >
+                      {moodData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {/* Recent Dreams */}
+            <div className="mt-8 bg-white rounded-xl shadow p-5">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                Recent Dreams
+              </h3>
+              {dreams.length === 0 ? (
+                <p className="text-gray-500 text-center">
+                  No dreams recorded yet.
+                </p>
+              ) : (
+                <ul className="space-y-3 max-h-60 overflow-auto">
+                  {dreams.slice(0, 5).map((d) => (
+                    <li
+                      key={d._id}
+                      className="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition"
+                    >
+                      <div className="font-medium text-gray-800">{d.title}</div>
+                      <div className="text-sm text-gray-500 flex justify-between">
+                        <span>{d.mood}</span>
+                        <span>
+                          {new Date(d.dateOfDream).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>

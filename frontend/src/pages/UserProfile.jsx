@@ -68,8 +68,58 @@ export default function UserProfile() {
 
   if (!user)
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 text-gray-500 text-lg">
-        Loading profile...
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-5xl bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden p-8"
+        >
+          {/* Header Skeleton */}
+          <div className="relative bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 h-48 rounded-t-2xl animate-pulse" />
+          <div className="flex justify-center -mt-12">
+            <div className="w-24 h-24 rounded-full bg-gray-200 border-4 border-white shadow-lg animate-pulse" />
+          </div>
+
+          {/* Profile Info Skeleton */}
+          <div className="mt-8 px-8 space-y-4">
+            <div className="h-6 w-48 bg-gray-200 rounded-lg animate-pulse mx-auto md:mx-0" />
+            <div className="h-4 w-32 bg-gray-200 rounded-lg animate-pulse mx-auto md:mx-0" />
+            <div className="h-10 w-32 bg-gray-200 rounded-xl animate-pulse mx-auto md:mx-0 mt-4" />
+          </div>
+
+          {/* Stats Section Skeleton */}
+          <div className="mt-10 grid md:grid-cols-3 gap-6 px-8">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-gray-50 rounded-xl shadow p-5 text-center animate-pulse"
+              >
+                <div className="w-10 h-10 bg-gray-200 rounded-full mx-auto mb-3" />
+                <div className="h-5 w-24 bg-gray-200 rounded-lg mx-auto mb-2" />
+                <div className="h-6 w-12 bg-gray-200 rounded-lg mx-auto" />
+              </div>
+            ))}
+          </div>
+
+          {/* Chart + Dreams Skeleton */}
+          <div className="mt-10 px-8 space-y-6">
+            <div className="h-6 w-40 bg-gray-200 rounded-lg animate-pulse" />
+            <div className="w-full h-64 bg-gray-100 rounded-xl animate-pulse" />
+            <div className="h-6 w-48 bg-gray-200 rounded-lg animate-pulse mt-8" />
+            <div className="space-y-3">
+              {[...Array(3)].map((_, i) => (
+                <div
+                  key={i}
+                  className="p-4 border border-gray-100 rounded-lg bg-gray-50 animate-pulse"
+                >
+                  <div className="h-4 w-1/2 bg-gray-200 rounded mb-2" />
+                  <div className="h-3 w-1/3 bg-gray-200 rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
       </div>
     );
 

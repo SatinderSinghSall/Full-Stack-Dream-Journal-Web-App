@@ -16,6 +16,8 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [filterMood, setFilterMood] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const dreamsPerPage = 6;
 
   useEffect(() => {
     const fetchDreams = async () => {
@@ -59,6 +61,20 @@ export default function Dashboard() {
       if (sortBy === "rating") return (b.rating || 0) - (a.rating || 0);
       return 0;
     });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredDreams.length / dreamsPerPage);
+  const indexOfLastDream = currentPage * dreamsPerPage;
+  const indexOfFirstDream = indexOfLastDream - dreamsPerPage;
+  const currentDreams = filteredDreams.slice(
+    indexOfFirstDream,
+    indexOfLastDream
+  );
+
+  // Reset to page 1 when filters/search/sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filterMood, sortBy]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white px-4 py-8 relative">
@@ -115,7 +131,6 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        {/* 🔎 Filter Controls */}
         <div className="flex flex-wrap gap-3 mt-4 bg-gray-800 p-4 rounded-2xl shadow-sm">
           <div className="flex-1 min-w-[200px]">
             <input
@@ -165,17 +180,51 @@ export default function Dashboard() {
             ))}
           </div>
         ) : filteredDreams.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDreams.map((dream, index) => (
-              <div
-                key={dream._id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentDreams.map((dream, index) => (
+                <div
+                  key={dream._id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <DreamCard dream={dream} />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-center items-center gap-4 mt-8">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded-full font-semibold transition ${
+                  currentPage === 1
+                    ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                    : "bg-indigo-600 hover:bg-indigo-500 text-white"
+                }`}
               >
-                <DreamCard dream={dream} />
-              </div>
-            ))}
-          </div>
+                Previous
+              </button>
+
+              <span className="text-gray-300">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded-full font-semibold transition ${
+                  currentPage === totalPages
+                    ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                    : "bg-indigo-600 hover:bg-indigo-500 text-white"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          </>
         ) : (
           <div className="flex flex-col items-center justify-center mt-16 text-gray-400">
             <div className="w-20 h-20 mb-4 rounded-full bg-gray-800 flex items-center justify-center shadow-inner">

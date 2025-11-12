@@ -1,18 +1,17 @@
 import { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import api from "../api/api";
+import { Link } from "react-router-dom";
 import { FiPlus } from "react-icons/fi";
-import { toast } from "react-toastify";
 
 import { AuthContext } from "../contexts/AuthContext";
 import DreamCard from "../components/DreamCard";
 import UserMenu from "../components/UserMenu";
 
+import api from "../api/api";
+
 export default function Dashboard() {
   const [dreams, setDreams] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [search, setSearch] = useState("");
   const [filterMood, setFilterMood] = useState("");
   const [sortBy, setSortBy] = useState("newest");
@@ -32,12 +31,6 @@ export default function Dashboard() {
     };
     fetchDreams();
   }, []);
-
-  // const handleLogout = () => {
-  //   toast.success("Logged out successfully!");
-  //   logout();
-  //   navigate("/login");
-  // };
 
   const stats = [{ label: "Total Dreams", value: dreams.length }];
 

@@ -33,11 +33,11 @@ export default function Dashboard() {
     fetchDreams();
   }, []);
 
-  const handleLogout = () => {
-    toast.success("Logged out successfully!");
-    logout();
-    navigate("/login");
-  };
+  // const handleLogout = () => {
+  //   toast.success("Logged out successfully!");
+  //   logout();
+  //   navigate("/login");
+  // };
 
   const stats = [{ label: "Total Dreams", value: dreams.length }];
 

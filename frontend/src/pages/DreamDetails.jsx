@@ -28,7 +28,6 @@ export default function DreamDetails() {
       try {
         const res = await api.get(`/dreams/${id}`);
         setDream(res.data);
-
         setForm({
           title: res.data.title || "",
           description: res.data.content || "",
@@ -46,7 +45,7 @@ export default function DreamDetails() {
       }
     };
     fetchDream();
-  }, [id]);
+  }, [id, navigate]);
 
   // Update dream
   const handleUpdate = async (e) => {

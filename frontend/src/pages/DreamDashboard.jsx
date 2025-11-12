@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   BarChart,
   Bar,
@@ -44,11 +44,7 @@ export default function AnalyticsDashboard() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchDreams();
-  }, []);
-
-  const fetchDreams = async () => {
+  const fetchDreams = useCallback(async () => {
     try {
       setLoading(true);
       const { data } = await api.get("/dreams");
@@ -59,7 +55,11 @@ export default function AnalyticsDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchDreams();
+  }, [fetchDreams]);
 
   const processAnalytics = (dreams) => {
     if (!dreams || dreams.length === 0) return;

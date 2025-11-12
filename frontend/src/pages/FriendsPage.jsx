@@ -8,7 +8,7 @@ import {
   getFriends,
   sendRequest,
   getFriendProgress,
-  findUserByEmail,
+  // findUserByEmail,
   deleteFriend,
   searchUsers,
 } from "../api/api";

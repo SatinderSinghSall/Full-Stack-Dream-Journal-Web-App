@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Edit3,
-  Mail,
+  // Mail,
   CalendarDays,
   Save,
   ArrowLeft,
